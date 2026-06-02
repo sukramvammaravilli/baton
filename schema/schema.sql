@@ -1,4 +1,4 @@
-CREATE DATABASE wallet_system;
+CREATE DATABASE baton_wallet_system;
 
 USE wallet_system;
 

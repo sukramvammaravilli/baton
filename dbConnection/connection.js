@@ -4,7 +4,7 @@ const pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
     password: 'password',
-    database: 'wallet_system',
+    database: 'baton_wallet_system',
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
