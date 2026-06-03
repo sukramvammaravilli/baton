@@ -1,23 +1,36 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const bodyParser = require('body-parser');
 const path = require('path');
-
+const authRoutes = require('./routes/authRoutes');
+const initializeDatabase = require('./db/initDb');
 const walletRoutes = require('./routes/walletRoutes');
 
 const app = express();
 
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
+app.use(express.urlencoded({
+    extended: true
+}));
 
 app.use('/api', walletRoutes);
 
 app.use(express.static(path.join(__dirname, 'ui')));
 
-const PORT = 3000;
+initializeDatabase();
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+const PORT =
+    process.env.PORT || 3000;
+
+if (process.env.NODE_ENV !== 'test') {
+
+    app.listen(PORT, () => {
+
+        console.log(
+            `Server running on ${PORT}`
+        );
+    });
+}
 
 module.exports = app;

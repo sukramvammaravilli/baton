@@ -1,10 +1,38 @@
-const express = require('express');
-const router = express.Router();
+const express =
+    require('express');
 
-const walletController = require('../controllers/walletController');
+const router =
+    express.Router();
 
-router.post('/deposit', walletController.deposit);
-router.post('/transfer', walletController.transfer);
-router.get('/transactions', walletController.getTransactions);
+const auth =
+    require('../middleware/authMiddleware');
 
-module.exports = router;
+const walletController =
+    require('../controllers/walletController');
+
+router.post(
+    '/deposit',
+    auth,
+    walletController.deposit
+);
+
+router.post(
+    '/transfer',
+    auth,
+    walletController.transfer
+);
+
+router.post(
+    '/reversal/:id',
+    auth,
+    walletController.reverseTransaction
+);
+
+router.get(
+    '/transactions',
+    auth,
+    walletController.getTransactions
+);
+
+module.exports =
+    router;

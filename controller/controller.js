@@ -71,3 +71,126 @@ module.exports = {
     transfer,
     getTransactions
 };
+
+
+
+
+const walletService =
+    require('../services/walletService');
+
+const deposit =
+    async (req, res) => {
+
+        try {
+
+            const result =
+                await walletService
+                .deposit(
+
+                    req.body
+
+                );
+
+            res.json(result);
+
+        } catch (error) {
+
+            res.status(400)
+            .json({
+
+                error:
+                    error.message
+
+            });
+        }
+    };
+
+const transfer =
+    async (req, res) => {
+
+        try {
+
+            const result =
+                await walletService
+                .transfer(
+
+                    req.body
+
+                );
+
+            res.json(result);
+
+        } catch (error) {
+
+            res.status(400)
+            .json({
+
+                error:
+                    error.message
+
+            });
+        }
+    };
+
+const getTransactions =
+    async (req, res) => {
+
+        try {
+
+            const data =
+                await walletService
+                .getTransactions(
+
+                    req.user.userId
+
+                );
+
+            res.json(data);
+
+        } catch (error) {
+
+            res.status(500)
+            .json({
+
+                error:
+                    error.message
+
+            });
+        }
+    };
+
+const reverseTransaction =
+    async (req, res) => {
+
+        try {
+
+            const result =
+                await walletService
+                .reverseTransaction(
+
+                    req.params.id
+
+                );
+
+            res.json(result);
+
+        } catch (error) {
+
+            res.status(400)
+            .json({
+
+                error:
+                    error.message
+
+            });
+        }
+    };
+
+module.exports = {
+
+    deposit,
+    transfer,
+    getTransactions,
+    reverseTransaction
+
+};
