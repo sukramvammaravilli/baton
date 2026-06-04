@@ -2,9 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const authRoutes = require('./routes/authRoutes');
-const initializeDatabase = require('./db/initDb');
-const walletRoutes = require('./routes/walletRoutes');
+const Routes = require('./routes/index');
 
 const app = express();
 
@@ -14,14 +12,12 @@ app.use(express.urlencoded({
     extended: true
 }));
 
-app.use('/api', walletRoutes);
+Routes(app)
 
 app.use(express.static(path.join(__dirname, 'ui')));
 
-initializeDatabase();
-
-const PORT =
-    process.env.PORT || 3000;
+const PORT =3000;
+    // process.env.PORT || 3000;
 
 if (process.env.NODE_ENV !== 'test') {
 

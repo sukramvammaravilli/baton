@@ -8,16 +8,16 @@ function validateAmount(amount) {
         amount === null
     ) {
 
-        throw new Error(
+        // throw new Error(
             'Amount is required'
-        );
+        // );
     }
 
     if (amount <= 0) {
 
-        throw new Error(
+        // throw new Error(
             'Amount must be greater than zero'
-        );
+        // );
     }
 
     const decimalPlaces =
@@ -26,9 +26,9 @@ function validateAmount(amount) {
 
     if (decimalPlaces > 3) {
 
-        throw new Error(
+        // throw new Error(
             'Maximum 3 decimal places allowed'
-        );
+        // );
     }
 }
 
@@ -38,9 +38,9 @@ function validateCurrency(currency) {
         !currencies.includes(currency)
     ) {
 
-        throw new Error(
+        // throw new Error(
             'Invalid ISO currency'
-        );
+        // );
     }
 }
 

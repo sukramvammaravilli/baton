@@ -1,19 +1,17 @@
-const express =
-    require('express');
+let express = require('express');
+let app = express.Router();
+// const customer_controller = require('../controllers/customer_controller');
+// const middleware = require('../config/middleware_config');
+// const applicationMiddleware = require('../middlewares/application');
+const authController = require('../controller/authController');
 
-const router =
-    express.Router();
-
-const authController =
-    require('../controllers/authController');
-
-router.post(
-
+app.post(
     '/login',
-
     authController.login
-
+);
+app.post(
+    '/register',
+    authController.register
 );
 
-module.exports =
-    router;
+module.exports = app;

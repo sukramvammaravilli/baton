@@ -1,23 +1,17 @@
-const bcrypt =
-    require('bcryptjs');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const pool = require('../dbConnection/connection');
+const userValidation = require('../utilities/userValidation');
 
-const jwt =
-    require('jsonwebtoken');
-
-const pool =
-    require('../db/connection');
-
-const login =
-    async (req, res) => {
-
+module.exports = {
+login : async (req, res) => {
         try {
 
-            const {
+           let params = { 
+                username: req.body.username,
+                password: req.body.password
 
-                username,
-                password
-
-            } = req.body;
+            };
 
             const [users] =
                 await pool.query(
@@ -109,10 +103,28 @@ const login =
 
             });
         }
-    };
+    },
+    
+register : async (req, res) => {
+    try {
+        let params = { 
+            username: req.body.userame,
+            password: req.body.password,
+            fullname: req.body.fullname
+        };
 
-module.exports = {
+        let validation  = await userValidation.validateUser(params);
+        if (validation) {
+        const hash = await bcrypt.hash( params.password, 10);
+        console.log(hash)
+        }
 
-    login
 
-};
+    } catch(error){
+
+        res.status(500).json({
+            error:error.message
+        });
+    }
+}
+}
