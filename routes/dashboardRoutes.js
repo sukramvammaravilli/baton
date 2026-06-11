@@ -1,61 +1,17 @@
-let express = require('express');
+let express = require("express");
 let app = express.Router();
-// const customer_controller = require('../controllers/customer_controller');
-// const middleware = require('../config/middleware_config');
-// const applicationMiddleware = require('../middlewares/application');
+const walletController = require("../controller/controller");
+const authenticateToken = require("../middleware/authMiddleware");
 
-
-// const auth =
-    // require('../middleware/authMiddleware');
-
-const walletController =
-    require('../controller/controller');
-
-app.post(
-    '/deposit',
-    // auth,
-    walletController.deposit
-);
-
-app.post(
-    '/transfer',
-    // auth,
-    walletController.transfer
-);
-
-// app.post(
-//     '/reversal/:id',
-//     // auth,
-//     walletController.reverseTransaction
-// );
-
-app.get(
-    '/transactions',
-    // auth,
-    walletController.getTransactions
-);
-
+// app.get("/",authenticateToken,walletController.dashboard);
+app.post("/deposit",authenticateToken, walletController.deposit);
+// app.post("/transfer", authenticateToken,walletController.transfer);
+app.get("/profile",authenticateToken,walletController.getProfile);
+app.put("/updateProfile", authenticateToken,walletController.updateProfile);
+// app.get("/getCurrencies",authenticateToken,walletController.getCurrencies);
+// app.post("/exchange", authenticateToken,walletController.exchange);
+// app.get("/transactions", authenticateToken,walletController.getTransactions);
+app.post("/addAccount", authenticateToken,walletController.addAccount);
+app.put("/removeAccount", authenticateToken,walletController.removeAccount);
+// app.post("/reverseTransaction", authenticateToken,walletController.reverseTransaction);
 module.exports = app;
-
-
-
-
-//     const express =
-//     require('express');
-
-// const router =
-//     express.Router();
-
-// const authController =
-//     require('../controllers/authController');
-
-// router.post(
-
-//     '/login',
-
-//     authController.login
-
-// );
-
-// module.exports =
-//     router;
