@@ -293,34 +293,5 @@ expect(response.statusCode)
 
 });
 
-test("DEPOSIT_013 Balance Updated", async () => {
-
-
-// Deposit
-// Query account table
-// Verify balance increased
-
-
-});
-
-test("DEPOSIT_014 Transaction Created", async () => {
-
-
-// Deposit
-// Query transaction table
-// Verify transaction inserted
-
-
-});
-
-test("DEPOSIT_015 Transaction Status SUCCESS", async () => {
-
-
-// Deposit
-// Query transaction table
-// Verify status = SUCCESS
-
-
-});
 
 });

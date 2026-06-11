@@ -40,6 +40,35 @@ module.exports = {
     }
   },
 
+  getCountries: async (params) => {
+    let is_external_connection = true;
+    try {
+      // appLogger.info(null, "Start of Repo: UserRepo, Method: getUserId");
+      if (!connection) {
+        is_external_connection = false;
+        connection = await BaseMySQLProvider.getPoolConnectionTransaction();
+      }
+      let qParams = [];
+      let query = ` SELECT currency_code,currency_symbol FROM currency`;
+      return await BaseMySQLProvider.executePromisedQueryFilterOkPacket(
+        connection,
+        query,
+        qParams,
+      );
+    } catch (error) {
+      // appLogger.error(null, null, "Error in Repo: userRepo, Method: getUserId", err);
+      if (!is_external_connection) {
+        BaseMySQLProvider.rollbackTransaction(connection);
+      }
+      throw error;
+    } finally {
+      // appLogger.info(null, "End of Repo: UserRepo, Method: getUserId");
+      if (!is_external_connection) {
+        BaseMySQLProvider.commitTransaction(connection);
+      }
+    }
+  },
+
   login: async (params) => {
     let is_external_connection = true;
     try {
@@ -136,5 +165,5 @@ module.exports = {
         BaseMySQLProvider.commitTransaction(connection);
       }
     }
-  }
-}
+  },
+};

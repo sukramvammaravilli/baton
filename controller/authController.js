@@ -66,19 +66,29 @@ module.exports = {
         });
       }
     } catch (error) {
-      if (error.message) {
+      if(error.message) {
         res.status(400).json({
-          message: error.message,
-        });
+          message: error.message
+        })
       } else {
-        res.status(500).json({
-          error: error.message,
-        });
-      }
+      res.status(500).json({
+        error: error.message,
+      });
+    }
     }
   },
 
-   logout: async (req, res) => {
+  getCountries: async (req, res) => {
+    try {
+      return res.status(200).json(await authServices.getCountries());
+    } catch (error) {
+      res.status(500).json({
+        error: error.message,
+      });
+    }
+  },
+
+  logout: async (req, res) => {
     try {
         const authHeader = req.headers.authorization;
         const token = authHeader.split(" ")[1];
