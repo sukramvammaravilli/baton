@@ -83,7 +83,7 @@ https://baton-wallet-system.onrender.com
 ## Install Dependencies
 
 after opening the code , run the following in any terminal like command prompt or git bash
-npm install
+- npm install
 
 
 ---
@@ -171,34 +171,29 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 ## Environment Configuration
 
-Create a `.env` file in the project root.
-
-env
-PORT=3000
-
-JWT_SECRET=mysecretkey
-
-SESSION_TIME=15m
-
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=password
-DB_NAME=wallet_system
+Create a `.env` file in the project root and enter the below key values and update your db values
+- PORT=3000
+- JWT_SECRET=mysecretkey
+- SESSION_TIME=15m
+- DB_HOST=localhost
+- DB_PORT=DB_PORT
+- DB_USER=root
+- DB_PASSWORD=password
+- DB_NAME=wallet_system
 
 
 ---
 
 ## Run Application
 
-npm start
+- npm start
 
 
 Application will start on:
 
-http://localhost:3000 (if locally run the code)
+- http://localhost:3000 (if locally run the code)
 
-https://baton-wallet-system.onrender.com/ (live)
+- https://baton-wallet-system.onrender.com/ (live)
 
 
 ---
