@@ -9,53 +9,34 @@ module.exports = {
       let params = {
         username: req.body.username,
         password: req.body.password,
+        session_time: process.env.SESSION_TIME
       };
-
-      const [users] = await pool.query(
-        `
-                    SELECT *
-                    FROM users
-                    WHERE username=?
-                    `,
-
-        [username],
-      );
-
+      let users = await authServices.login(params);
       if (users.length === 0) {
         return res.status(401).json({
-          error: "Invalid credentials",
+          error: "User does not exists",
         });
       }
-
       const user = users[0];
-
-      const isMatch = await bcrypt.compare(
-        password,
-
-        user.password,
-      );
-
+      const isMatch = await bcrypt.compare(params.password, user.password);
       if (!isMatch) {
         return res.status(401).json({
           error: "Invalid credentials",
         });
       }
-
       const token = jwt.sign(
         {
-          userId: user.id,
-
           username: user.username,
         },
-
         process.env.JWT_SECRET,
-
         {
-          expiresIn: "1h",
+          expiresIn: params.session_time
         },
       );
-
-      res.json({
+      await authServices.insertSession(params,token);
+      res.status(200).json({
+        fullname: user.fullname,
+        username: user.username,
         token,
       });
     } catch (error) {
@@ -96,4 +77,20 @@ module.exports = {
       }
     }
   },
+
+   logout: async (req, res) => {
+    try {
+        const authHeader = req.headers.authorization;
+        const token = authHeader.split(" ")[1];
+        await authServices.logout(token);
+        return res.status(200).json({
+            message: "Logged out successfully"
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            message: "Logout failed"
+        });
+    }
+}
 };
