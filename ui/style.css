@@ -1,83 +1,3 @@
-/* body {
-
-    font-family: Arial, sans-serif;
-
-    background: #f5f5f5;
-
-    margin: 0;
-
-    padding: 20px;
-}
-
-.container {
-
-    max-width: 1000px;
-
-    margin: auto;
-}
-
-.card {
-
-    background: white;
-
-    padding: 20px;
-
-    margin-bottom: 20px;
-
-    border-radius: 10px;
-
-    box-shadow:
-        0 2px 10px
-        rgba(0,0,0,0.1);
-}
-
-input {
-
-    width: 100%;
-
-    padding: 10px;
-
-    margin-top: 10px;
-
-    margin-bottom: 10px;
-
-    box-sizing: border-box;
-}
-
-button {
-
-    padding: 10px 20px;
-
-    cursor: pointer;
-}
-
-.logout-btn {
-
-    float: right;
-}
-
-table {
-
-    width: 100%;
-
-    border-collapse: collapse;
-}
-
-th,
-td {
-
-    border: 1px solid #ddd;
-
-    padding: 10px;
-
-    text-align: left;
-}
-
-th {
-
-    background: #efefef;
-} */
-
 *{
     margin:0;
     padding:0;
@@ -87,13 +7,15 @@ th {
 
 body{
 
-    height:100vh;
+    min-height:100vh;
 
     display:flex;
 
     justify-content:center;
 
-    align-items:center;
+    align-items:flex-start;
+
+    padding:40px 20px;
 
     background:
     linear-gradient(
@@ -101,141 +23,197 @@ body{
         #56ccf2,
         #bb31f5
     );
-}
 
+    overflow-y:auto;
+}
 .wrapper{
 
     width:100%;
+
     display:flex;
+
     justify-content:center;
+
+    align-items:flex-start;
+}
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    min-width: 320px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    display: none;
+    z-index: 9999;
+    box-shadow:
+        0 4px 12px rgba(0,0,0,0.2);
+    animation:
+        slideIn 0.3s ease;
+}
+
+.toast.success {
+    background-color: #28a745;
+}
+
+.toast.error {
+    background-color: #dc3545;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform:
+            translateX(100%);
+    }
+
+    to {
+        opacity: 1;
+        transform:
+            translateX(0);
+    }
 }
 
 .card{
-
-    width:420px;
-
+    width:900px;
+    max-width:95%;
     background:white;
-
-    padding:50px;
-
+    padding:40px;
     border-radius:15px;
-
-    box-shadow:
-    0 15px 35px
-    rgba(0,0,0,0.2);
+    box-shadow:0 15px 35px rgba(0,0,0,0.2);
 }
 
 .card h1{
-
     text-align:center;
-
     margin-bottom:40px;
-
     font-size:48px;
-
     color:#222;
 }
 
 .input-box{
-
     margin-bottom:25px;
 }
 
 .input-box label{
-
     display:block;
-
     margin-bottom:8px;
-
     font-size:14px;
-
     color:#555;
 }
 
 .input-group{
-
     display:flex;
-
     align-items:center;
-
     border-bottom:
     1px solid #ddd;
 }
 
 .input-group i{
-
     color:#999;
-
     margin-right:10px;
 }
 
 .input-group input{
-
     width:100%;
-
     border:none;
-
     outline:none;
-
     padding:12px 0;
-
     font-size:16px;
 }
 
 .btn{
-
     width:100%;
-
     padding:14px;
-
     border:none;
-
     border-radius:30px;
-
     background:
     linear-gradient(
         90deg,
         #56ccf2,
         #e040fb
     );
-
     color:white;
-
     font-size:16px;
-
     font-weight:600;
-
     cursor:pointer;
-
     transition:0.3s;
 }
 
 .btn:hover{
-
     transform:translateY(-2px);
 }
 
 .signup-link{
-
     margin-top:20px;
-
     text-align:center;
 }
 
 .signup-link a{
-
     text-decoration:none;
-
     color:#bb31f5;
-
     font-weight:600;
 }
 
 #message{
-
     text-align:center;
-
     color:red;
-
     margin-top:15px;
+}
+
+.signup-grid{
+    width:100%;
+}
+
+.grid-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:25px;
+    margin-bottom:15px;
+}
+
+.grid-row .input-box{
+    width:100%;
+}
+
+select{
+    width:100%;
+    border:none;
+    outline:none;
+    padding:12px 0;
+    font-size:16px;
+    background:none;
+}
+
+.password-rules{
+    margin-top:10px;
+    font-size:13px;
+    color:#777;
+}
+
+.password-rules p{
+    margin:4px 0;
+}
+
+.valid{
+    color:green;
+}
+
+.invalid{
+    color:red;
+}
+
+.input-error{
+    font-size:12px;
+    color:red;
+    margin-top:5px;
+}
+
+@media(max-width:768px){
+    .grid-row{
+        flex-direction:column;
+        gap:0;
+    }
+
 }

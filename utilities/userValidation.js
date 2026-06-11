@@ -1,31 +1,38 @@
 module.exports = {
+  validateUser: async (params) => {
+    const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
 
-    validateUser : async (params) => {
+    const identitynumberRegex = /^[a-zA-Z0-9_]{3,50}$/;
 
-    const usernameRegex =
-    /^[a-zA-Z0-9_]{3,20}$/;
+    const fullNameRegex = /^[A-Za-z ]{3,50}$/;
 
-    const fullNameRegex =
-    /^[A-Za-z ]{3,50}$/;
-
-    // const emailRegex =
-    // /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     const passwordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
 
-    if(!usernameRegex.test(params.username))
-        throw new Error('Invalid username');
+    const mobileRegex = /^\+[1-9]\d{1,14}$/;
 
-    if(!fullNameRegex.test(params.fullname))
-        throw new Error('Invalid full name');
+    if (params.username && !usernameRegex.test(params.username))
+      throw new Error("Invalid username");
 
-    // if(!emailRegex.test(email))
-        // throw new Error('Invalid email');
+    if (params.fullname && !fullNameRegex.test(params.fullname))
+      throw new Error("Invalid full name");
 
-    if(!passwordRegex.test(params.password))
-        throw new Error('Weak password');
+    if (params.email && !emailRegex.test(params.email))
+      throw new Error("Invalid email");
 
+    if (params.password && !passwordRegex.test(params.password))
+      throw new Error("Weak password");
+
+    if (params.mobile && !mobileRegex.test(params.mobile))
+      throw new Error("Invalid mobile number");
+
+    if (
+      params.identityNumber &&
+      !identitynumberRegex.test(params.identityNumber)
+    )
+      throw new Error("Invalid Identity Number");
     return true;
-}
+  },
 };

@@ -1,191 +1,202 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Wallet System</title>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+<title>
+    Multi Currency Wallet
+</title>
 
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    />
+<link rel="preconnect"
+      href="https://fonts.googleapis.com">
 
-    <link rel="stylesheet" href="style.css">
+<link rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet">
+
+<link rel="stylesheet"
+      href="dashboard.css">
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
 </head>
+
 <body>
+<div class="dashboard-container">
 
-<div class="container mt-5">
+    <!-- ========================= -->
+    <!-- SIDEBAR -->
+    <!-- ========================= -->
 
-    <h2 class="mb-4">Multi Currency Wallet</h2>
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-wallet"></i>
+            <div>
+                <h2>
+                    Multi Currency
+                </h2>
+                <span>
+                    Digital Wallet
+                </span>
+            </div>
+        </div>
 
-    <div class="card p-4 mb-4">
+        <ul class="sidebar-menu">
 
-        <h4>Transfer Money</h4>
+            <li class="active"
+        onclick="showSection('dashboardSection', this)">
+        <i class="fa-solid fa-house"></i>
+        <span>Dashboard</span>
+    </li>
 
-        <input class="form-control mb-2" id="fromAccount" placeholder="From Account">
+    <li onclick="showSection('profileSection', this)">
+        <i class="fa-solid fa-user"></i>
+        <span>Profile</span>
+    </li>
 
-        <input class="form-control mb-2" id="toAccount" placeholder="To Account">
+    <li onclick="showSection('depositSection', this)">
+        <i class="fa-solid fa-money-bill-wave"></i>
+        <span>Deposit</span>
+    </li>
 
-        <input class="form-control mb-2" id="amount" placeholder="Amount">
+    <li onclick="showSection('transferSection', this)">
+        <i class="fa-solid fa-arrow-right-arrow-left"></i>
+        <span>Transfer</span>
+    </li>
 
-        <input class="form-control mb-2" id="currency" placeholder="Currency">
+    <li onclick="showSection('transactionSection', this)">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+        <span>Transactions</span>
+    </li>
 
-        <button class="btn btn-primary" onclick="transferMoney()">
-            Transfer
-        </button>
-    </div>
+    <li onclick="showSection('exchangeSection', this)">
+        <i class="fa-solid fa-coins"></i>
+        <span>Currency Exchange</span>
+    </li>
 
-    <div class="card p-4">
+    <li id="logoutBtn">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span>Logout</span>
+    </li>
 
-        <h4>Transactions</h4>
+</ul>
 
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Type</th>
-                    <th>Amount</th>
-                    <th>Currency</th>
-                    <th>Date</th>
-                </tr>
-            </thead>
-            <tbody id="transactionTable"></tbody>
-        </table>
+    </aside>
+
+    <!-- ========================= -->
+    <!-- MAIN CONTENT -->
+    <!-- ========================= -->
+
+    <main class="main-content">
+        <!-- ========================= -->
+        <!-- DASHBOARD SECTION -->
+        <!-- ========================= -->
+
+        <section
+            id="dashboardSection"
+            class="page-section active">
+            <div class="section-title">
+                <h2>
+                    Dashboard Overview
+                </h2>
+            </div>
+                <div id="noAccountMessage" style="display:none;">
+    <div class="no-account-box">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <h2>No Accounts Found</h2>
+        <p>
+            Please create an account from
+            Profile → Account Management to access all menu
+        </p>
     </div>
 </div>
 
-<script src="app.js"></script>
-</body>
-</html>
+<div id="dashboardContent">
+     <div class="dashboard-filter">
+                <label>
+                    Select Account
+                </label>
+                <select id="accountDropdown">
+                    <option>
+                        Loading Accounts...
+                    </option>
+                </select>
+       </div>
+    <div class="summary-grid">
+                <div class="summary-card total">
+                    <div>
+                        <h3>
+                            Total Balance
+                        </h3>
+                        <h2 id="totalBalance">
+                            $0.00
+                        </h2>
+                    </div>
+                    <i class="fa-solid fa-sack-dollar"></i>
+                </div>
+                <div class="summary-card income">
+                    <div>
+                        <h3>
+                            Total Deposit
+                        </h3>
+                        <h2 id="totalDeposit">
+                            $0.00
+                        </h2>
+                    </div>
+                    <i class="fa-solid fa-arrow-down"></i>
+                </div>
+                <div class="summary-card expense">
+                    <div>
+                        <h3>
+                            $Total Transfer
+                        </h3>
+                        <h2 id="totalTransfer">
+                            0.00
+                        </h2>
+                    </div>
+                    <i class="fa-solid fa-arrow-up"></i>
+                </div>
+                <div
+    class="summary-card exchange-card"
+    onclick="toggleRates()">
 
-
-
-
-
-
-
-<!DOCTYPE html>
-<html>
-<head>
-
-    <title>
-        Wallet Dashboard
-    </title>
-
-    <link
-        rel="stylesheet"
-        href="style.css">
-
-</head>
-
-<body>
-
-<div class="container">
-
-    <h1>
-        Multi Currency Wallet
-    </h1>
-
-    <button
-        class="logout-btn"
-        onclick="logout()">
-
-        Logout
-
-    </button>
-
-    <div class="card">
-
+    <div>
         <h3>
-            Deposit Money
+            Exchange Rates
         </h3>
-
-        <input
-            id="depositAccount"
-            placeholder="Account Number">
-
-        <input
-            id="depositAmount"
-            type="number"
-            step="0.001"
-            placeholder="Amount">
-
-        <input
-            id="depositCurrency"
-            placeholder="Currency">
-
-        <button
-            onclick="deposit()">
-
-            Deposit
-
-        </button>
-
+        <h2>
+            w.r.t USD
+        </h2>
     </div>
 
-    <div class="card">
+    <i class="fa-solid fa-globe"></i>
 
-        <h3>
-            Transfer Money
-        </h3>
+</div>
+            </div>
 
-        <input
-            id="fromAccount"
-            placeholder="From Account">
+            <div
+    id="exchangeRatesPanel"
+    style="display:none; margin-top:20px;">
 
-        <input
-            id="toAccount"
-            placeholder="To Account">
-
-        <input
-            id="transferAmount"
-            type="number"
-            step="0.001"
-            placeholder="Amount">
-
-        <input
-            id="transferCurrency"
-            placeholder="Currency">
-
-        <button
-            onclick="transfer()">
-
-            Transfer
-
-        </button>
-
-    </div>
-
-    <div class="card">
-
-        <h3>
-            Transaction History
-        </h3>
-
-        <button
-            onclick="loadTransactions()">
-
-            Refresh
-
-        </button>
+    <div class="table-container">
 
         <table>
 
             <thead>
-
                 <tr>
-
-                    <th>ID</th>
-                    <th>Type</th>
-                    <th>Amount</th>
-                    <th>Currency</th>
-                    <th>Date</th>
-
+                    <th>Currency Symbol</th>
+                    <th>Currency Name</th>
+                    <th>Currency Code</th>
+                    <th>Rate</th>
                 </tr>
-
             </thead>
 
-            <tbody
-                id="transactions">
-
+            <tbody id="ratesTableBody">
             </tbody>
 
         </table>
@@ -193,8 +204,494 @@
     </div>
 
 </div>
+        </section>
 
+                <!-- ========================= -->
+        <!-- PROFILE SECTION -->
+        <!-- ========================= -->
+
+        <section
+            id="profileSection"
+            class="page-section">
+            <div class="section-title">
+                <h2>
+                    Profile Information
+                </h2>
+            </div>
+            <div class="profile-container">
+                <div class="profile-details">
+                    <div class="detail-item">
+                        <label>
+                            Username
+                        </label>
+                        <h3 id="profileUsername">
+                        </h3>
+                    </div>
+                    <div class="detail-item">
+                        <label>
+                            Full Name
+                        </label>
+                        <h3 id="profileName">
+                        </h3>
+                    </div>
+                    <div class="detail-item">
+                       <label>
+                            Email
+                        </label>
+                        <h3 id="profileEmail">
+                        </h3>
+                    </div>
+                    <div class="detail-item">
+                        <label>
+                            Mobile Number
+                        </label>
+                        <h3 id="profilePhone">
+                        </h3>
+                    </div>
+                    <div class="detail-item">
+                        <label>
+                            Currency
+                        </label>
+                        <h3 id="profileCurrency">
+                        </h3>
+                    </div>
+                    <div class="detail-item">
+                        <label>
+                            PAN / National ID
+                        </label>
+                        <h3 id="profileIdentity">
+                        </h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================= -->
+            <!-- UPDATE PROFILE -->
+            <!-- ========================= -->
+
+            <div class="section-title">
+                <h2>
+                    Update Profile
+                </h2>
+            </div>
+            <div class="form-card">
+                <form id="updateProfileForm">
+                    <div class="form-group">
+                        <label>
+                            Full Name
+                        </label>
+                        <input
+                            type="text"
+                            id="updateFullName"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            Email
+                        </label>
+                        <input
+                            type="email"
+                            id="updateEmail"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            Mobile Number
+                        </label>
+                        <input
+                            type="text"
+                            id="updateMobile"
+                            required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            PAN / National ID
+                        </label>
+                        <input
+                            type="text"
+                            id="updateIdentity"
+                            required>
+                    </div>
+                    <button
+                        type="submit">
+                        Update Profile
+                    </button>
+                </form>
+            </div>
+
+            <!-- ========================= -->
+            <!-- ACCOUNT MANAGEMENT -->
+            <!-- ========================= -->
+
+      <div class="account-management-card">
+
+    <div class="card-header">
+
+        <div>
+
+            <h3>
+                <i class="fa-solid fa-wallet"></i>
+                Account Management
+            </h3>
+
+            <p>
+                Manage your wallet accounts
+            </p>
+
+        </div>
+
+        <button
+            class="add-account-btn"
+            onclick="openAccountModal()">
+
+            <i class="fa-solid fa-plus"></i>
+            Add Account
+
+        </button>
+
+    </div>
+
+    <div id="accountList">
+    </div>
+
+</div>
+
+        </section>
+
+        <!-- ========================= -->
+        <!-- DEPOSIT SECTION -->
+        <!-- ========================= -->
+
+        <section
+            id="depositSection"
+            class="page-section">
+            <div class="section-title">
+                <h2>
+                    Deposit Funds
+                </h2>
+            </div>
+            <div class="form-card">
+                <form id="depositForm">
+                    <div class="form-group">
+                        <label>
+                            To Account
+                        </label>
+                        <select
+                            id="depositAccount">
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            Currency
+                        </label>
+                        <select
+                            id="depositCurrency">
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            Amount
+                        </label>
+                        <input
+                            type="number"
+                            id="depositAmount"
+                            placeholder="Enter Amount">
+                    </div>
+                    <button
+                        type="submit">
+                        Deposit Now
+                   </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- ========================= -->
+        <!-- TRANSFER SECTION -->
+        <!-- ========================= -->
+
+        <section
+            id="transferSection"
+            class="page-section">
+            <div class="section-title">
+                <h2>
+                    Transfer Funds
+                </h2>
+            </div>
+            <div class="form-card">
+                <form id="transferForm">
+                    <div class="form-group">
+                        <label>
+                            From Account
+                        </label>
+                        <select
+                            id="transferFromAccount">
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            To Account
+                        </label>
+                        <input
+                            type="text"
+                            id="receiverAccount"
+                            placeholder="Enter Recipient Account">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            Currency
+                        </label>
+                        <select
+                           id="transferCurrency">
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            Amount
+                        </label>
+                        <input
+                            type="number"
+                            id="transferAmount"
+                            placeholder="Enter Amount">
+                    </div>
+                    <button
+                        type="submit">
+                        Transfer Now
+                    </button>
+                </form>
+            </div>
+        </section>
+
+                <!-- ========================= -->
+        <!-- TRANSACTIONS SECTION -->
+        <!-- ========================= -->
+
+        <section
+            id="transactionSection"
+            class="page-section">
+            <div class="section-title">
+                <h2>
+                    Transaction History
+                </h2>
+            </div>
+            <div class="form-group">
+                <label>
+                    Select Account
+                </label>
+                <select
+                    id="transactionAccount">
+                </select>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+
+                            <th>
+                                Transaction ID
+                            </th>
+                            <th>
+                                Username
+                            </th>
+                            <th>
+                                Type
+                            </th>
+                            <th>
+                                From Account
+                            </th>
+                            <th>
+                                To Account
+                            </th>
+                            <th>
+                                Currency
+                            </th>
+                            <th>
+                                Amount
+                            </th>
+<th>
+                                Converted Amount
+                            </th>
+                            <th>
+                                Status
+                            </th>
+                            <th>
+                                Created At
+                            </th>
+                            <th> Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionTable">
+                        <tr>
+                            <td colspan="6">
+                                No Transactions Found
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ========================= -->
+        <!-- CURRENCY EXCHANGE -->
+        <!-- ========================= -->
+
+        <section
+            id="exchangeSection"
+            class="page-section">
+            <div class="section-title">
+                <h2>
+                    Currency Exchange
+                </h2>
+            </div>
+            <div class="form-card">
+                <div class="form-group">
+                    <label>
+                        From Currency
+                    </label>
+                    <select
+                       id="fromCurrency">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>
+                        To Currency
+                    </label>
+                    <select
+                        id="toCurrency">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>
+                        Amount
+                    </label>
+                    <input
+                       type="number"
+                        id="exchangeAmount"
+                        placeholder="Enter Amount">
+                    </div>
+                    <button
+                        id="exchangeBtn">
+                           Convert Currency
+                       </button>
+                <div class="form-group">
+                    <label>
+                        Converted Amount
+                    </label>
+                    <input
+                        type="text"
+                        id="convertedAmount"
+                        readonly>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================= -->
+        <!-- LIVE EXCHANGE RATE TABLE -->
+        <!-- Dashboard Section API -->
+        <!-- ========================= -->
+
+        <div
+            id="liveRatesSection"
+            style="display:none;">
+            <div class="section-title">
+                <h2>
+                    Exchange Rates
+                </h2>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                Currency
+                            </th>
+                            <th>
+                                Exchange Rate
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody
+                        id="ratesContainer">
+                    </tbody>
+              </table>
+            </div>
+        </div>
+
+        <!-- ========================= -->
+        <!-- LOADER -->
+        <!-- ========================= -->
+
+        <div
+            id="loader"
+            class="loader">
+        </div>
+
+        <!-- ========================= -->
+        <!-- FOOTER -->
+        <!-- ========================= -->
+
+        <footer
+            class="dashboard-footer">
+            <p>
+                © 2026 Multi Currency Wallet
+            </p>
+            <p>
+                Built Using Node.js,
+                Express.js,
+                MySQL
+            </p>
+        </footer>
+    </main>
+</div>
+<div
+    id="accountModal"
+    class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h3>
+                Add Account
+            </h3>
+
+            <span
+                onclick="closeAccountModal()">
+
+                &times;
+
+            </span>
+
+        </div>
+
+        <input
+            type="text"
+            id="newAccountNumber"
+            placeholder="Enter Account Number">
+
+        <div class="modal-footer">
+
+            <button
+                class="cancel-btn"
+                onclick="closeAccountModal()">
+
+                Cancel
+
+            </button>
+
+            <button
+                class="save-btn"
+                onclick="addAccount()">
+
+                Add Account
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
 <script src="app.js"></script>
-
 </body>
 </html>

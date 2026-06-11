@@ -1,155 +1,315 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport"
       content="width=device-width, initial-scale=1.0">
-
 <title>Sign Up</title>
-
 <link rel="stylesheet" href="style.css">
-
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-
 </head>
-
 <body>
-
 <div class="wrapper">
-
     <div class="card">
-
         <h1>Sign Up</h1>
+        <form id="signupForm" class="signup-grid">
+            <div class="grid-row">
+    <div class="input-box">
+        <label>Username</label>
+        <div class="input-group">
+            <i class="fa-solid fa-user"></i>
+            <input
+                type="text"
+                id="username"
+                placeholder="Enter Username"
+                required>
+        </div>
+    </div>
+    <div class="input-box">
+        <label>Full Name</label>
+        <div class="input-group">
+            <i class="fa-solid fa-id-card"></i>
+            <input
+                type="text"
+                id="fullname"
+                placeholder="Enter Full Name"
+                required>
+        </div>
+    </div>
+    </div>
+    <div class="grid-row">
+    <div class="input-box">
+        <label>Email Address</label>
+        <div class="input-group">
+            <i class="fa-solid fa-envelope"></i>
+            <input
+                type="email"
+                id="email"
+                placeholder="Enter Email"
+                required>
+        </div>
+    </div>
+    <div class="input-box">
+        <label>Currency</label>
+        <div class="input-group">
+            <i class="fa-solid fa-globe"></i>
+            <select id="currency" required>
+    <option value="">Select Currency</option>
+</select>
+        </div>
+</div>
+    </div>
+<div class="grid-row">
+    <div class="input-box">
+        <label>Mobile Number</label>
+        <div class="input-group">
+            <input
+    type="tel"
+    id = "mobile"
+    name="mobile"
+    placeholder="Enter Mobile Number with country code"
+    pattern="^\+[1-9]\d{1,14}$"
+    required>
+        </div>
+    </div>
+    <div class="input-box">
+        <label>PAN / National ID</label>
+        <div class="input-group">
+            <i class="fa-solid fa-address-card"></i>
+            <input
+                type="text"
+                id="identityNumber"
+                placeholder="Enter PAN or National ID"
+                required>
+        </div>
+</div>
+    </div>
+    <div class="input-box">
 
-        <form id="signupForm">
+    <label>Password</label>
 
-            <div class="input-box">
+    <div class="input-group">
 
-                <label>Username</label>
+        <i class="fa-solid fa-lock"></i>
 
-                <div class="input-group">
+        <input
+            type="password"
+            id="password"
+            placeholder="Enter Password"
+            required>
 
-                    <i class="fa-solid fa-user"></i>
+    </div>
+    
+    <div class="password-rules">
 
-                    <input
-                        type="text"
-                        id="username"
-                        required>
+        <p id="rule-length" class="invalid">
+            Minimum 8 characters
+        </p>
 
-                </div>
+        <p id="rule-upper" class="invalid">
+            Atleast one uppercase letter
+        </p>
 
-            </div>
+        <p id="rule-lower" class="invalid">
+            Atleast one lowercase letter
+        </p>
 
-            <div class="input-box">
+        <p id="rule-number" class="invalid">
+            Atleast one number
+        </p>
 
-                <label>Full Name</label>
-
-                <div class="input-group">
-
-                    <i class="fa-solid fa-user"></i>
-
-                    <input
-                        type="text"
-                        id="fullname"
-                        required>
-
-                </div>
-
-            </div>
-
-            <div class="input-box">
-
-                <label>Password</label>
-
-                <div class="input-group">
-
-                    <i class="fa-solid fa-lock"></i>
-
-                    <input
-                        type="password"
-                        id="password"
-                        required>
-
-                </div>
-
-            </div>
-
-            <button
-                type="submit"
-                class="btn">
-
-                REGISTER
-
-            </button>
-
-            <p id="message"></p>
-
-            <div class="signup-link">
-
-                Already have account?
-
-                <a href="login.html">
-                    Login
-                </a>
-
-            </div>
-
-        </form>
+        <p id="rule-symbol" class="invalid">
+            Atleast one special character
+        </p>
 
     </div>
 
 </div>
-
+    <button
+        type="submit"
+        class="btn">
+        REGISTER
+    </button>
+    <p id="message"></p>
+    <div class="signup-link">
+        Already have account?
+        <a href="index.html">
+            Login
+        </a>
+    </div>
+</form>
+    </div>
+</div>
+<div id="toast" class="toast"></div>
 <script>
+function showToast(message, type) {
+    const toast =
+        document.getElementById('toast');
+    toast.innerText =
+        message;
+    toast.className =
+        `toast ${type}`;
+    toast.style.display =
+        'block';
+    setTimeout(() => {
+        toast.style.display =
+            'none';
+    }, 3000);
+}
+
+const passwordInput =
+document.getElementById('password');
+
+passwordInput.addEventListener(
+    'keyup',
+    function(){
+
+        const password =
+            this.value;
+
+        toggleRule(
+            'rule-length',
+            password.length >= 8
+        );
+
+        toggleRule(
+            'rule-upper',
+            /[A-Z]/.test(password)
+        );
+
+        toggleRule(
+            'rule-lower',
+            /[a-z]/.test(password)
+        );
+
+        toggleRule(
+            'rule-number',
+            /[0-9]/.test(password)
+        );
+
+        toggleRule(
+            'rule-symbol',
+            /[^A-Za-z0-9]/.test(password)
+        );
+
+    }
+);
+
+function toggleRule(id, valid){
+
+    const element =
+        document.getElementById(id);
+
+    if(valid){
+
+        element.classList.remove(
+            'invalid'
+        );
+
+        element.classList.add(
+            'valid'
+        );
+
+    }
+    else{
+
+        element.classList.remove(
+            'valid'
+        );
+
+        element.classList.add(
+            'invalid'
+        );
+
+    }
+
+}
+
+const select = document.getElementById('currency');
+
+fetch('/api/countries')
+    .then(res => res.json())
+    .then(data => {
+        data.forEach(country => {
+            const option = document.createElement('option');
+
+            option.value = country.currency_code;
+            option.textContent =
+                `${country.currency_symbol} (${country.currency_code})`;
+
+            select.appendChild(option);
+        });
+    });
 
 document
 .getElementById('signupForm')
-.addEventListener('submit', async(e)=>{
-
+.addEventListener('submit', async (e) => {
     e.preventDefault();
-
-    const response =
-        await fetch('/api/register',{
-
-            method:'POST',
-
-            headers:{
-                'Content-Type':'application/json'
-            },
-
-            body:JSON.stringify({
-
-                username:
-                document.getElementById(
-                    'username'
-                ).value,
-
-                fullname:
-                document.getElementById(
-                    'fullname'
-                ).value,
-                
-                password:
-                document.getElementById(
-                    'password'
-                ).value
-            })
-        });
-
-    const data =
-        await response.json();
-
-    document.getElementById(
-        'message'
-    ).innerText =
-    data.message ||
-    data.error;
-
+    try {
+        const response =
+            await fetch('/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type':
+                    'application/json'
+                },
+                body: JSON.stringify({
+                    username:
+                        document.getElementById(
+                            'username'
+                        ).value,
+                    fullname:
+                        document.getElementById(
+                            'fullname'
+                        ).value,
+                    email: 
+                    document.getElementById(
+                            'email'
+                        ).value,
+                    currencyCode: 
+                    document.getElementById(
+                            'currency'
+                        ).value,
+                    mobile:
+                    document.getElementById(
+                            'mobile'
+                        ).value,
+                    identityNumber: 
+                    document.getElementById(
+                            'identityNumber'
+                        ).value,
+                    password:
+                        document.getElementById(
+                            'password'
+                        ).value
+                })
+            });
+        const data =
+            await response.json();
+        if (response.ok) {
+            showToast(
+                'Registration Successful',
+                'success'
+            );
+            setTimeout(() => {
+                window.location.href =
+                    '/index.html';
+            }, 1500);
+        } else {
+            showToast(
+                data.error ||
+                'Registration Failed',
+                'error'
+            );
+        }
+    } catch (error) {
+        console.log(error);
+        showToast(
+            'Something went wrong',
+            'error'
+        );
+    }
 });
-
 </script>
-
 </body>
 </html>
