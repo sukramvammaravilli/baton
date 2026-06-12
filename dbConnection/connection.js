@@ -20,7 +20,7 @@ class BaseMySqlProvider {
   static executeConnectionPromisedQuery(connection, query, params) {
     return new Promise((resolve, reject) => {
       try {
-        this.getPool().query(query, params, (err_query, result) => {
+        connection.query(query, params, (err_query, result) => {
           return resolve(this.handleQueryResponse(err_query, result));
         });
       } catch (err) {

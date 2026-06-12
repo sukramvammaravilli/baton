@@ -1,238 +1,288 @@
 const dashboardService = require("../services/services");
 const userValidation = require("../utilities/userValidation");
+const errorCodes = require("../config/errorCode");
 
 module.exports = {
   dashboard: async (req, res) => {
     try {
-      // appLogger.debug('dashboardController/deposit - Start');
-      const username = req.query.username;
-      let result = await dashboardService.dashboard(username);
-      res.status(200).json(result);
-    } catch (error) {
-      // appLogger.error('dashboardController/deposit - error - ', error);
-      if (error && error.code) {
-        res.error(null, error);
-      } else {
-        res.error(null, errorCodes.errorDesc.NOTIFICATION_CONTROLLER_ERROR);
+      const username = req.user.username;
+      if (!username) {
+        return res.status(errorCodes.MISSING_USERNAME.status).json({
+          error: errorCodes.MISSING_USERNAME.message,
+        });
       }
-    } finally {
-      // appLogger.info('dashboardController/deposit - End');
+      let result = await dashboardService.dashboard(username);
+      return res.status(200).json(result);
+    } catch (error) {
+      return res.status(errorCodes.INTERNAL_SERVER_ERROR.status).json({
+        error: errorCodes.INTERNAL_SERVER_ERROR.message,
+      });
     }
   },
 
   getProfile: async (req, res) => {
     try {
-      // appLogger.debug('dashboardController/deposit - Start');
-      const username = req.query.username;
-      let result = await dashboardService.getProfile(username);
-      res.status(200).json(result[0]);
-    } catch (error) {
-      // appLogger.error('dashboardController/deposit - error - ', error);
-      if (error && error.code) {
-        res.error(null, error);
-      } else {
-        res.error(null, errorCodes.errorDesc.NOTIFICATION_CONTROLLER_ERROR);
+      const username = req.user.username;
+      if (!username) {
+        return res.status(errorCodes.MISSING_USERNAME.status).json({
+          error: errorCodes.MISSING_USERNAME.message,
+        });
       }
-    } finally {
-      // appLogger.info('dashboardController/deposit - End');
+      let result = await dashboardService.getProfile(username);
+      return res.status(200).json(result[0]);
+    } catch (error) {
+      return res.status(errorCodes.INTERNAL_SERVER_ERROR.status).json({
+        error: errorCodes.INTERNAL_SERVER_ERROR.message,
+      });
     }
   },
 
   getCurrencies: async (req, res) => {
     try {
-      // appLogger.debug('dashboardController/deposit - Start');
       let result = await dashboardService.getCurrencies();
-      res.status(200).json(result);
+      return res.status(200).json(result);
     } catch (error) {
-      // appLogger.error('dashboardController/deposit - error - ', error);
-      if (error && error.code) {
-        res.error(null, error);
-      } else {
-        res.error(null, errorCodes.errorDesc.NOTIFICATION_CONTROLLER_ERROR);
-      }
-    } finally {
-      // appLogger.info('dashboardController/deposit - End');
+      return res.status(errorCodes.INTERNAL_SERVER_ERROR.status).json({
+        error: errorCodes.INTERNAL_SERVER_ERROR.message,
+      });
     }
   },
 
   exchange: async (req, res) => {
     try {
-      // appLogger.debug('dashboardController/deposit - Start');
       const params = {
         fromCurrency: req.body.from.split(",")[0],
         toCurrency: req.body.to.split(",")[0],
         amount: req.body.amount,
       };
+      let paramsValidation = Object.keys(params);
+      for (let param of paramsValidation) {
+        if (param === "amount" && params[param] < 0) {
+          return res.status(errorCodes.INVALID_AMOUNT_EXCHANGE.status).json({
+            error: errorCodes.INVALID_AMOUNT_EXCHANGE.message,
+          });
+        }
+        if (!params[param]) {
+          return res.status(errorCodes.MISSING_PARAMETER.status).json({
+            error: errorCodes.MISSING_PARAMETER.message + "" + param,
+          });
+        }
+      }
       const result = await dashboardService.exchange(params);
-      res.status(200).json({
+      return res.status(200).json({
         convertedAmount: result,
       });
     } catch (error) {
-      // appLogger.error('dashboardController/deposit - error - ', error);
-      if (error && error.code) {
-        res.error(null, error);
-      } else {
-        res.error(null, errorCodes.errorDesc.NOTIFICATION_CONTROLLER_ERROR);
-      }
-    } finally {
-      // appLogger.info('dashboardController/deposit - End');
+      return res.status(errorCodes.INTERNAL_SERVER_ERROR.status).json({
+        error: errorCodes.INTERNAL_SERVER_ERROR.message,
+      });
     }
   },
 
   updateProfile: async (req, res) => {
     try {
-      // appLogger.debug('dashboardController/deposit - Start');
       const params = {
-        username: req.body.username,
+        username: req.user.username,
         email: req.body.email,
         currency_code: req.body.currencyCode,
         mobile: req.body.mobile,
         identityNumber: req.body.identityNumber,
         fullname: req.body.fullname,
       };
+      let paramsValidation = Object.keys(params);
+      for (let param of paramsValidation) {
+        if (!params[param]) {
+          return res.status(errorCodes.MISSING_PARAMETER.status).json({
+            error: errorCodes.MISSING_PARAMETER.message + "" + param,
+          });
+        }
+      }
       let validation = await userValidation.validateUser(params);
       if (validation) {
         await dashboardService.updateProfile(params);
-        return res.status(200).json({
-          message: "Profile Updated Successfully",
-        });
+        return res.status(200).json("Profile Updated Successfully");
       }
     } catch (error) {
-      // appLogger.error('dashboardController/deposit - error - ', error);
-      if (error && error.code) {
-        res.error(null, error);
+      if (error.message) {
+        return res.status(400).json({
+          error: error.message,
+        });
       } else {
-        res.error(null, errorCodes.errorDesc.NOTIFICATION_CONTROLLER_ERROR);
+        return res.status(errorCodes.INTERNAL_SERVER_ERROR.status).json({
+          error: errorCodes.INTERNAL_SERVER_ERROR.message,
+        });
       }
-    } finally {
-      // appLogger.info('dashboardController/deposit - End');
     }
   },
 
   addAccount: async (req, res) => {
     try {
-      // appLogger.debug('dashboardController/deposit - Start');
-      const username = req.body.username;
+      const username = req.user.username;
       const accountNumber = req.body.accountNo;
-      await dashboardService.addAccount(username, accountNumber);
-      res.status(200).json("Account added successfully");
-    } catch (error) {
-      // appLogger.error('dashboardController/deposit - error - ', error);
-      if (error && error.code) {
-        res.error(null, error);
-      } else {
-        res.error(null, errorCodes.errorDesc.NOTIFICATION_CONTROLLER_ERROR);
+      if (!username) {
+        return res.status(errorCodes.MISSING_USERNAME.status).json({
+          error: errorCodes.MISSING_USERNAME.message,
+        });
       }
-    } finally {
-      // appLogger.info('dashboardController/deposit - End');
+      if (!accountNumber) {
+        return res.status(errorCodes.MISSING_ACCOUNT.status).json({
+          error: errorCodes.MISSING_ACCOUNT.message,
+        });
+      }
+      await dashboardService.addAccount(username, accountNumber);
+      return res.status(200).json("Account added successfully");
+    } catch (error) {
+      return res.status(errorCodes.INTERNAL_SERVER_ERROR.status).json({
+        error: errorCodes.INTERNAL_SERVER_ERROR.message,
+      });
     }
   },
 
   removeAccount: async (req, res) => {
     try {
-      // appLogger.debug('dashboardController/deposit - Start');
-      const username = req.body.username;
+      const username = req.user.username;
       const accountNumber = req.body.account;
-      await dashboardService.removeAccount(username, accountNumber);
-      res.status(200).json("Removed account successfully");
-    } catch (error) {
-      // appLogger.error('dashboardController/deposit - error - ', error);
-      if (error && error.code) {
-        res.error(null, error);
-      } else {
-        res.error(null, errorCodes.errorDesc.NOTIFICATION_CONTROLLER_ERROR);
+      if (!username) {
+        return res.status(errorCodes.MISSING_USERNAME.status).json({
+          error: errorCodes.MISSING_USERNAME.message,
+        });
       }
-    } finally {
-      // appLogger.info('dashboardController/deposit - End');
+      if (!accountNumber) {
+        return res.status(errorCodes.MISSING_ACCOUNT.status).json({
+          error: errorCodes.MISSING_ACCOUNT.message,
+        });
+      }
+      await dashboardService.removeAccount(username, accountNumber);
+      return res.status(200).json("Removed account successfully");
+    } catch (error) {
+      return res.status(errorCodes.INTERNAL_SERVER_ERROR.status).json({
+        error: errorCodes.INTERNAL_SERVER_ERROR.message,
+      });
     }
   },
 
   deposit: async (req, res) => {
     try {
-      // appLogger.debug('dashboardController/deposit - Start');
       const params = {
-        username: req.body.username,
+        username: req.user.username,
         accountNo: req.body.accountNo,
         amount: req.body.amount,
         currency: req.body.currency.split(",")[0],
       };
-      const result = await dashboardService.deposit(params);
-      res.status(200).json("Deposit Success");
-    } catch (error) {
-      // appLogger.error('dashboardController/deposit - error - ', error);
-      if (error && error.code) {
-        res.error(null, error);
-      } else {
-        res.error(null, errorCodes.errorDesc.NOTIFICATION_CONTROLLER_ERROR);
+      let paramsValidation = Object.keys(params);
+      for (let param of paramsValidation) {
+        if (param === "amount" && params[param] < 0) {
+          return res.status(errorCodes.INVALID_AMOUNT_DEPOSIT.status).json({
+            error: errorCodes.INVALID_AMOUNT_DEPOSIT.message,
+          });
+        }
+        if (!params[param]) {
+          return res.status(errorCodes.MISSING_PARAMETER.status).json({
+            error: errorCodes.MISSING_PARAMETER.message + "" + param,
+          });
+        }
       }
-    } finally {
-      // appLogger.info('dashboardController/deposit - End');
+      const result = await dashboardService.deposit(params);
+      return res.status(200).json("Deposit Success");
+    } catch (error) {
+      if(error.message){
+        return res.status(errorCodes.ACCOUNT_NOT_ACTIVE.status).json({
+          error: error.message
+        })
+      } else {
+      return res.status(errorCodes.INTERNAL_SERVER_ERROR.status).json({
+        error: errorCodes.INTERNAL_SERVER_ERROR.message,
+      });
+    }
     }
   },
 
   transfer: async (req, res) => {
     try {
-      // appLogger.debug('dashboardController/transfer - Start');
       const params = {
-        username: req.body.username,
+        username: req.user.username,
         fromAccount: req.body.fromAccount,
         toAccount: req.body.toAccount,
         amount: req.body.amount,
         currency: req.body.currency.split(",")[0],
       };
-      const result = await dashboardService.transfer(params);
-      res.status(200).json("Transfer Success");
-    } catch (error) {
-      // appLogger.error('dashboardController/transfer - error - ', error);
-      if (error && error.code) {
-        res.error(null, error);
-      } else {
-        res.error(null, errorCodes.errorDesc.NOTIFICATION_CONTROLLER_ERROR);
+      let paramsValidation = Object.keys(params);
+      for (let param of paramsValidation) {
+        if (param === "amount" && params[param] < 0) {
+          return res.status(errorCodes.INVALID_AMOUNT_TRANSFER.status).json({
+            error: errorCodes.INVALID_AMOUNT_TRANSFER.message,
+          });
+        }
+        if (!params[param]) {
+          return res.status(errorCodes.MISSING_PARAMETER.status).json({
+            error: errorCodes.MISSING_PARAMETER.message + "" + param,
+          });
+        }
       }
-    } finally {
-      // appLogger.info('dashboardController/transfer - End');
+      const result = await dashboardService.transfer(params);
+      return res.status(200).json("Transfer Success");
+    } catch (error) {
+      if(error.message){
+        return res.status(errorCodes.ACCOUNT_NOT_ACTIVE.status).json({
+          error: error.message
+        })
+      } else {
+      return res.status(errorCodes.INTERNAL_SERVER_ERROR.status).json({
+        error: errorCodes.INTERNAL_SERVER_ERROR.message,
+      });
     }
+  }
   },
 
   getTransactions: async (req, res) => {
     try {
-      // appLogger.debug('dashboardController/deposit - Start');
       const params = {
-        username: req.query.username,
+        username: req.user.username,
         account: req.query.accountNo,
       };
-      let result = await dashboardService.getTransactions(params);
-      res.status(200).json(result);
-    } catch (error) {
-      // appLogger.error('dashboardController/deposit - error - ', error);
-      if (error && error.code) {
-        res.error(null, error);
-      } else {
-        res.error(null, errorCodes.errorDesc.NOTIFICATION_CONTROLLER_ERROR);
+      let paramsValidation = Object.keys(params);
+      for (let param of paramsValidation) {
+        if (!params[param]) {
+          return res.status(errorCodes.MISSING_PARAMETER.status).json({
+            error: errorCodes.MISSING_PARAMETER.message + "" + param,
+          });
+        }
       }
-    } finally {
-      // appLogger.info('dashboardController/deposit - End');
+      let result = await dashboardService.getTransactions(params);
+      return res.status(200).json(result);
+    } catch (error) {
+      return res.status(errorCodes.INTERNAL_SERVER_ERROR.status).json({
+        error: errorCodes.INTERNAL_SERVER_ERROR.message,
+      });
     }
   },
 
   reverseTransaction: async (req, res) => {
     try {
-      // appLogger.debug('dashboardController/deposit - Start');
       const params = {
-        username: req.body.username,
+        username: req.user.username,
         transaction_id: req.body.transactionId,
       };
-      await dashboardService.reverseTransaction(params);
-      res.status(200).json("Transaction reversed");
-    } catch (error) {
-      // appLogger.error('dashboardController/deposit - error - ', error);
-      if (error && error.code) {
-        res.error(null, error);
-      } else {
-        res.error(null, errorCodes.errorDesc.NOTIFICATION_CONTROLLER_ERROR);
+      let paramsValidation = Object.keys(params);
+      for (let param of paramsValidation) {
+        if (!params[param]) {
+          return res.status(errorCodes.MISSING_PARAMETER.status).json({
+            error: errorCodes.MISSING_PARAMETER.message + "" + param,
+          });
+        }
       }
-    } finally {
-      // appLogger.info('dashboardController/deposit - End');
+      await dashboardService.reverseTransaction(params);
+      return res.status(200).json("Transaction reversed");
+    } catch (error) {
+      if(error.message){
+        return res.status(errorCodes.ACCOUNT_NOT_ACTIVE.status).json({
+          error: error.message
+        })
+      } else {
+      return res.status(errorCodes.INTERNAL_SERVER_ERROR.status).json({
+        error: errorCodes.INTERNAL_SERVER_ERROR.message,
+      });
     }
-  }
+    }
+  },
 };

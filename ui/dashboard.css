@@ -200,6 +200,32 @@ body{
     opacity:.9;
 }
 
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    min-width: 320px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    display: none;
+    z-index: 9999;
+    box-shadow:
+        0 4px 12px rgba(0,0,0,0.2);
+    animation:
+        slideIn 0.3s ease;
+}
+
+.toast.success {
+    background-color: #28a745;
+}
+
+.toast.error {
+    background-color: #dc3545;
+}
+
 .exchange-card:hover{
     transform:translateY(-4px);
 }

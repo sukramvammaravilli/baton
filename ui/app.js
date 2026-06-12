@@ -37,6 +37,7 @@ async function toggleRates() {
     panel.style.display = "none";
   }
 }
+
 /* =========================================
    HELPERS
 ========================================= */
@@ -106,7 +107,7 @@ async function loadRatesTable() {
             `;
     });
   } catch (error) {
-    console.log(error);
+    showMessage(error);
   }
 }
 
@@ -218,8 +219,7 @@ function showSection(sectionId, element) {
 ========================================= */
 async function loadProfile() {
   try {
-    const username = localStorage.getItem("username");
-    const response = await apiFetch(`${API.profile}?username=${username}`);
+    const response = await apiFetch(API.profile);
     profileData = await response.json();
     $("profileUsername").innerText = (
       profileData.username || "-"
@@ -235,7 +235,7 @@ async function loadProfile() {
       profileData.identity_number || "-"
     ).toUpperCase();
   } catch (error) {
-    console.log(error);
+    showMessage(error);
   }
 }
 /* =========================================
@@ -243,12 +243,11 @@ async function loadProfile() {
 ========================================= */
 async function loadAccounts() {
   try {
-    const username = localStorage.getItem("username");
-    const response = await apiFetch(`${API.dashboard}?username=${username}`);
+    const response = await apiFetch(API.dashboard);
     accountData = await response.json();
     populateAccountDropdowns();
     if (accountData.length) {
-      loadDashboardSummary(accountData[0].account_no, username);
+      loadDashboardSummary(accountData[0].account_no);
     }
     if (accountData.length) {
       document.getElementById("noAccountMessage").style.display = "none";
@@ -258,7 +257,7 @@ async function loadAccounts() {
       document.getElementById("dashboardContent").style.display = "none";
     }
   } catch (error) {
-    console.log(error);
+    showMessage(error);
   }
 }
 
@@ -290,9 +289,9 @@ function populateAccountDropdowns() {
 /* =========================================
    DASHBOARD SUMMARY
 ========================================= */
-async function loadDashboardSummary(accountNo, username) {
+async function loadDashboardSummary(accountNo) {
   try {
-    const response = await apiFetch(`${API.dashboard}?username=${username}`);
+    const response = await apiFetch(API.dashboard);
     const data = await response.json();
     let details = data.find((ele) => ele.account_no === accountNo);
     const currency_detail = currencyData.find(
@@ -305,7 +304,7 @@ async function loadDashboardSummary(accountNo, username) {
     $("totalTransfer").innerText =
       currency_detail.currency_symbol + " " + details.total_transfer || 0;
   } catch (error) {
-    console.log(error);
+    showMessage(error);
   }
 }
 /* =========================================
@@ -314,14 +313,13 @@ async function loadDashboardSummary(accountNo, username) {
 
 async function loadTransactions(accountNo) {
   try {
-    const username = localStorage.getItem("username");
     const response = await apiFetch(
-      `${API.transactions}?accountNo=${accountNo}&username=${username}`,
+      `${API.transactions}?accountNo=${accountNo}`,
     );
     const data = await response.json();
     renderTransactions(data);
   } catch (error) {
-    console.log(error);
+    showMessage(error);
   }
 }
 
@@ -338,14 +336,13 @@ async function reverseTransaction(transactionId, account_no) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      transactionId,
-      username: localStorage.getItem("username"),
+      transactionId
     }),
   });
   if (response.ok) {
     showMessage("Transaction Reversed");
     loadTransactions(account_no);
-    loadDashboardSummary();
+    loadDashboardSummary(account_no);
   }
 }
 
@@ -428,14 +425,13 @@ async function loadCurrencies() {
       });
     });
   } catch (error) {
-    console.log(error);
+    showMessage(error);
   }
 }
 
 async function addAccount() {
   const accountNo = $("newAccountNumber").value;
   const payload = {
-    username: localStorage.getItem("username"),
     accountNo,
   };
   const response = await apiFetch(API.addAccount, {
@@ -454,7 +450,6 @@ async function addAccount() {
 
 async function removeAccount(account) {
   const payload = {
-    username: localStorage.getItem("username"),
     account,
   };
 
@@ -476,7 +471,6 @@ async function removeAccount(account) {
 $("updateProfileForm")?.addEventListener("submit", async function (e) {
   e.preventDefault();
   const payload = {
-    username: localStorage.getItem("username"),
     fullname: $("updateFullName").value,
     email: $("updateEmail").value,
     mobile: $("updateMobile").value,
@@ -501,7 +495,6 @@ $("updateProfileForm")?.addEventListener("submit", async function (e) {
 $("depositForm")?.addEventListener("submit", async function (e) {
   e.preventDefault();
   const payload = {
-    username: localStorage.getItem("username"),
     accountNo: $("depositAccount").value,
     currency: $("depositCurrency").value,
     amount: $("depositAmount").value,
@@ -524,7 +517,6 @@ $("depositForm")?.addEventListener("submit", async function (e) {
 $("transferForm")?.addEventListener("submit", async function (e) {
   e.preventDefault();
   const payload = {
-    username: localStorage.getItem("username"),
     fromAccount: $("transferFromAccount").value,
     toAccount: $("receiverAccount").value,
     currency: $("transferCurrency").value,
@@ -565,7 +557,7 @@ $("exchangeBtn")?.addEventListener("click", async function () {
    DROPDOWN CHANGE EVENTS
 ========================================= */
 $("accountDropdown")?.addEventListener("change", function () {
-  loadDashboardSummary(this.value, localStorage.getItem("username"));
+  loadDashboardSummary(this.value);
 });
 
 $("transactionAccount")?.addEventListener("change", function () {
@@ -595,7 +587,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     await loadCurrencies();
     await loadAccounts();
   } catch (error) {
-    console.log(error);
+    showMessage(error);
   } finally {
     hideLoader();
   }

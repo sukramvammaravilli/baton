@@ -1,15 +1,10 @@
 const BaseMySQLProvider = require("../dbConnection/connection");
-let connection = require("mysql");
-
+const errorCodes = require("../config/errorCode");
 module.exports = {
   dashboard: async (username) => {
-    let is_external_connection = true;
+    let connection;
     try {
-      // appLogger.info(null, "Start of Repo: UserRepo, Method: getUserId");
-      if (!connection) {
-        is_external_connection = false;
-        connection = await BaseMySQLProvider.getPoolConnectionTransaction();
-      }
+      connection = await BaseMySQLProvider.getPoolConnectionTransaction();
       let qParams = [username, "ACTIVE"];
       let query = ` SELECT * FROM accounts a INNER JOIN users u ON a.username = u.username WHERE a.username = ? AND a.status = ?`;
       return await BaseMySQLProvider.executePromisedQueryFilterOkPacket(
@@ -18,27 +13,17 @@ module.exports = {
         qParams,
       );
     } catch (error) {
-      // appLogger.error(null, null, "Error in Repo: userRepo, Method: getUserId", err);
-      if (!is_external_connection) {
-        BaseMySQLProvider.rollbackTransaction(connection);
-      }
+      BaseMySQLProvider.rollbackTransaction(connection);
       throw error;
     } finally {
-      // appLogger.info(null, "End of Repo: UserRepo, Method: getUserId");
-      if (!is_external_connection) {
-        BaseMySQLProvider.commitTransaction(connection);
-      }
+      BaseMySQLProvider.commitTransaction(connection);
     }
   },
 
   addAccount: async (username, account) => {
-    let is_external_connection = true;
+    let connection;
     try {
-      // appLogger.info(null, "Start of Repo: UserRepo, Method: getUserId");
-      if (!connection) {
-        is_external_connection = false;
-        connection = await BaseMySQLProvider.getPoolConnectionTransaction();
-      }
+      connection = await BaseMySQLProvider.getPoolConnectionTransaction();
       let qParams = [username, account, 0.0, 0.0, 0.0, "ACTIVE"];
       let query = ` INSERT INTO accounts (username,account_no,total_balance,total_deposit,total_transfer,status) VALUES (?,?,?,?,?,?)`;
       return await BaseMySQLProvider.executePromisedQueryFilterOkPacket(
@@ -47,27 +32,17 @@ module.exports = {
         qParams,
       );
     } catch (error) {
-      // appLogger.error(null, null, "Error in Repo: userRepo, Method: getUserId", err);
-      if (!is_external_connection) {
-        BaseMySQLProvider.rollbackTransaction(connection);
-      }
+      BaseMySQLProvider.rollbackTransaction(connection);
       throw error;
     } finally {
-      // appLogger.info(null, "End of Repo: UserRepo, Method: getUserId");
-      if (!is_external_connection) {
-        BaseMySQLProvider.commitTransaction(connection);
-      }
+      BaseMySQLProvider.commitTransaction(connection);
     }
   },
 
   removeAccount: async (username, account) => {
-    let is_external_connection = true;
+    let connection;
     try {
-      // appLogger.info(null, "Start of Repo: UserRepo, Method: getUserId");
-      if (!connection) {
-        is_external_connection = false;
-        connection = await BaseMySQLProvider.getPoolConnectionTransaction();
-      }
+      connection = await BaseMySQLProvider.getPoolConnectionTransaction();
       let qParams = ["INACTIVE", username, account];
       let query = ` UPDATE accounts SET status = ? WHERE username = ? AND account_no = ? AND status = 'ACTIVE'`;
       return await BaseMySQLProvider.executePromisedQueryFilterOkPacket(
@@ -76,27 +51,17 @@ module.exports = {
         qParams,
       );
     } catch (error) {
-      // appLogger.error(null, null, "Error in Repo: userRepo, Method: getUserId", err);
-      if (!is_external_connection) {
-        BaseMySQLProvider.rollbackTransaction(connection);
-      }
+      BaseMySQLProvider.rollbackTransaction(connection);
       throw error;
     } finally {
-      // appLogger.info(null, "End of Repo: UserRepo, Method: getUserId");
-      if (!is_external_connection) {
-        BaseMySQLProvider.commitTransaction(connection);
-      }
+      BaseMySQLProvider.commitTransaction(connection);
     }
   },
 
   getProfile: async (username) => {
-    let is_external_connection = true;
+    let connection;
     try {
-      // appLogger.info(null, "Start of Repo: UserRepo, Method: getUserId");
-      if (!connection) {
-        is_external_connection = false;
-        connection = await BaseMySQLProvider.getPoolConnectionTransaction();
-      }
+      connection = await BaseMySQLProvider.getPoolConnectionTransaction();
       let qParams = [username];
       let query = ` SELECT * FROM users WHERE username = ? `;
       return await BaseMySQLProvider.executePromisedQueryFilterOkPacket(
@@ -105,27 +70,17 @@ module.exports = {
         qParams,
       );
     } catch (error) {
-      // appLogger.error(null, null, "Error in Repo: userRepo, Method: getUserId", err);
-      if (!is_external_connection) {
-        BaseMySQLProvider.rollbackTransaction(connection);
-      }
+      BaseMySQLProvider.rollbackTransaction(connection);
       throw error;
     } finally {
-      // appLogger.info(null, "End of Repo: UserRepo, Method: getUserId");
-      if (!is_external_connection) {
-        BaseMySQLProvider.commitTransaction(connection);
-      }
+      BaseMySQLProvider.commitTransaction(connection);
     }
   },
 
   getCurrencies: async () => {
-    let is_external_connection = true;
+    let connection;
     try {
-      // appLogger.info(null, "Start of Repo: UserRepo, Method: getUserId");
-      if (!connection) {
-        is_external_connection = false;
-        connection = await BaseMySQLProvider.getPoolConnectionTransaction();
-      }
+      connection = await BaseMySQLProvider.getPoolConnectionTransaction();
       const qParams = [];
       let query = ` SELECT * FROM currency `;
       return await BaseMySQLProvider.executePromisedQueryFilterOkPacket(
@@ -134,39 +89,27 @@ module.exports = {
         qParams,
       );
     } catch (error) {
-      // appLogger.error(null, null, "Error in Repo: userRepo, Method: getUserId", err);
-      if (!is_external_connection) {
-        BaseMySQLProvider.rollbackTransaction(connection);
-      }
+      BaseMySQLProvider.rollbackTransaction(connection);
       throw error;
     } finally {
-      // appLogger.info(null, "End of Repo: UserRepo, Method: getUserId");
-      if (!is_external_connection) {
-        BaseMySQLProvider.commitTransaction(connection);
-      }
+      BaseMySQLProvider.commitTransaction(connection);
     }
   },
 
   exchange: async (params) => {
-    let is_external_connection = true;
+    let connection;
     try {
-      // appLogger.info(null, "Start of Repo: UserRepo, Method: getUserId");
-      if (!connection) {
-        is_external_connection = false;
-        connection = await BaseMySQLProvider.getPoolConnectionTransaction();
-      }
+      connection = await BaseMySQLProvider.getPoolConnectionTransaction();
       if (params.fromCurrency === params.toCurrency) {
         return params.amount;
       } else {
         const qParams = [params.fromCurrency, params.toCurrency];
         let query = ` SELECT * FROM currency WHERE currency_code IN (?,?) `;
-
         let values = await BaseMySQLProvider.executePromisedQueryFilterOkPacket(
           connection,
           query,
           qParams,
         );
-
         let fromCurrency = values.find(
           (ele) => ele.currency_code === params.fromCurrency,
         ).exchange_rate;
@@ -177,27 +120,17 @@ module.exports = {
         return amount.toFixed(3);
       }
     } catch (error) {
-      // appLogger.error(null, null, "Error in Repo: userRepo, Method: getUserId", err);
-      if (!is_external_connection) {
-        BaseMySQLProvider.rollbackTransaction(connection);
-      }
+      BaseMySQLProvider.rollbackTransaction(connection);
       throw error;
     } finally {
-      // appLogger.info(null, "End of Repo: UserRepo, Method: getUserId");
-      if (!is_external_connection) {
-        BaseMySQLProvider.commitTransaction(connection);
-      }
+      BaseMySQLProvider.commitTransaction(connection);
     }
   },
 
   deposit: async (params) => {
-    let is_external_connection = true;
+    let connection;
     try {
-      // appLogger.info(null, "Start of Repo: UserRepo, Method: getUserId");
-      if (!connection) {
-        is_external_connection = false;
-        connection = await BaseMySQLProvider.getPoolConnectionTransaction();
-      }
+      connection = await BaseMySQLProvider.getPoolConnectionTransaction();
       let qParams = [params.accountNo, "ACTIVE"];
       let query = ` SELECT * FROM users u INNER JOIN accounts a ON u.username = a.username WHERE a.account_no = ? AND a.status = ? `;
       let result = await BaseMySQLProvider.executePromisedQueryFilterOkPacket(
@@ -258,30 +191,20 @@ VALUES
           );
         }
       } else {
-        throw error;
+        throw new Error(errorCodes.ACCOUNT_NOT_ACTIVE.message);
       }
     } catch (error) {
-      // appLogger.error(null, null, "Error in Repo: userRepo, Method: getUserId", err);
-      if (!is_external_connection) {
-        BaseMySQLProvider.rollbackTransaction(connection);
-      }
+      BaseMySQLProvider.rollbackTransaction(connection);
       throw error;
     } finally {
-      // appLogger.info(null, "End of Repo: UserRepo, Method: getUserId");
-      if (!is_external_connection) {
-        BaseMySQLProvider.commitTransaction(connection);
-      }
+      BaseMySQLProvider.commitTransaction(connection);
     }
   },
 
   getTransactions: async (params) => {
-    let is_external_connection = true;
+    let connection;
     try {
-      // appLogger.info(null, "Start of Repo: UserRepo, Method: getUserId");
-      if (!connection) {
-        is_external_connection = false;
-        connection = await BaseMySQLProvider.getPoolConnectionTransaction();
-      }
+      connection = await BaseMySQLProvider.getPoolConnectionTransaction();
       let qParams = [
         params.account,
         params.account,
@@ -332,29 +255,18 @@ ORDER BY created_at DESC`;
         qParams,
       );
     } catch (error) {
-      // appLogger.error(null, null, "Error in Repo: userRepo, Method: getUserId", err);
-      if (!is_external_connection) {
-        BaseMySQLProvider.rollbackTransaction(connection);
-      }
+      BaseMySQLProvider.rollbackTransaction(connection);
       throw error;
     } finally {
-      // appLogger.info(null, "End of Repo: UserRepo, Method: getUserId");
-      if (!is_external_connection) {
-        BaseMySQLProvider.commitTransaction(connection);
-      }
+      BaseMySQLProvider.commitTransaction(connection);
     }
   },
 
   transfer: async (params) => {
-    let is_external_connection = true;
+    let connection;
     try {
-      // appLogger.info(null, "Start of Repo: UserRepo, Method: getUserId");
-      if (!connection) {
-        is_external_connection = false;
-        connection = await BaseMySQLProvider.getPoolConnectionTransaction();
-      }
+      connection = await BaseMySQLProvider.getPoolConnectionTransaction();
       let qParams = [params.fromAccount, params.toAccount, "ACTIVE"];
-
       let query = ` SELECT * FROM users u INNER JOIN accounts a ON u.username = a.username WHERE a.account_no IN (?,?) AND a.status = ? FOR UPDATE`;
       let result = await BaseMySQLProvider.executePromisedQueryFilterOkPacket(
         connection,
@@ -368,16 +280,15 @@ ORDER BY created_at DESC`;
             toCurrency: obj.currency_code,
             amount: params.amount,
           });
-          if (obj.account_no === params.fromAccount ) {
+          if (obj.account_no === params.fromAccount) {
             qParams = [
               transferAmount,
               transferAmount,
               params.fromAccount,
               transferAmount,
             ];
-
             if (Number(obj.total_balance) < Number(transferAmount)) {
-              throw new Error("Insufficient balance");
+              throw new Error(errorCodes.INSUFFICIENT_BALANCE.message);
             }
             query = ` UPDATE accounts SET total_balance = total_balance - ?, total_transfer = total_transfer + ? WHERE account_no = ? AND total_balance >= ? `;
             let result =
@@ -387,7 +298,7 @@ ORDER BY created_at DESC`;
                 qParams,
               );
             if (result.affectedRows !== 1) {
-              throw new Error("Debit failed");
+              throw new Error(errorCodes.TRANSFER_FAILED.message);
             }
           } else {
             qParams = [transferAmount, transferAmount, params.toAccount];
@@ -399,11 +310,10 @@ ORDER BY created_at DESC`;
                 qParams,
               );
             if (result.affectedRows !== 1) {
-              throw new Error("Credit failed");
+              throw new Error(errorCodes.TRANSFER_FAILED.message);
             }
           }
         }
-
         for (let obj of result) {
           let transferAmount = await module.exports.exchange({
             fromCurrency: params.currency,
@@ -477,30 +387,20 @@ VALUES
           }
         }
       } else {
-        throw new Error("Invalid Accounts");
+        throw new Error(errorCodes.INVALID_TRANSFER_ACCOUNTS.message);
       }
     } catch (error) {
-      // appLogger.error(null, null, "Error in Repo: userRepo, Method: getUserId", err);
-      if (!is_external_connection) {
-        BaseMySQLProvider.rollbackTransaction(connection);
-      }
+      BaseMySQLProvider.rollbackTransaction(connection);
       throw error;
     } finally {
-      // appLogger.info(null, "End of Repo: UserRepo, Method: getUserId");
-      if (!is_external_connection) {
-        BaseMySQLProvider.commitTransaction(connection);
-      }
+      BaseMySQLProvider.commitTransaction(connection);
     }
   },
 
   reverseTransaction: async (params) => {
-    let is_external_connection = true;
+    let connection;
     try {
-      // appLogger.info(null, "Start of Repo: UserRepo, Method: getUserId");
-      if (!connection) {
-        is_external_connection = false;
-        connection = await BaseMySQLProvider.getPoolConnectionTransaction();
-      }
+      connection = await BaseMySQLProvider.getPoolConnectionTransaction();
       let qParams = [params.transaction_id];
       let query = ` SELECT * FROM transactions WHERE transaction_id = ?`;
       let result = await BaseMySQLProvider.executePromisedQueryFilterOkPacket(
@@ -512,70 +412,73 @@ VALUES
         result = result[0];
         qParams = [result.from_account, result.to_account, "ACTIVE"];
         query = ` SELECT * FROM users u INNER JOIN accounts a ON u.username = a.username WHERE a.account_no IN (?,?) AND a.status = ? FOR UPDATE`;
-        let results = await BaseMySQLProvider.executePromisedQueryFilterOkPacket(
-        connection,
-        query,
-        qParams,
-      );
-      if (results.length === 2) {
-        for (let obj of results) {
-          
-          if (obj.account_no === result.from_account) {
-            qParams = [
-              result.converted_amount,
-              result.converted_amount,
-              result.from_account
-            ];
-            query = ` UPDATE accounts SET total_balance = total_balance + ?, total_transfer = total_transfer - ? WHERE account_no = ?  `;
-            let execute =
-              await BaseMySQLProvider.executePromisedQueryFilterOkPacket(
-                connection,
-                query,
-                qParams,
-              );
-            if (execute.affectedRows !== 1) {
-              throw new Error("Credit failed");
-            }
-          } else {
-            let transferAmount = await module.exports.exchange({
-            fromCurrency: result.currency,
-            toCurrency: obj.currency_code,
-            amount: result.amount,
-          });
-            qParams = [transferAmount, transferAmount, result.to_account,transferAmount];
-            if (Number(obj.total_balance) < Number(transferAmount)) {
-              throw new Error("Insufficient balance");
-            }
-            query = ` UPDATE accounts SET total_balance = total_balance - ?, total_deposit = total_deposit - ? WHERE account_no = ? AND total_balance >= ?`;
-            let execute =
-              await BaseMySQLProvider.executePromisedQueryFilterOkPacket(
-                connection,
-                query,
-                qParams,
-              );
-            if (execute.affectedRows !== 1) {
-              throw new Error("Debit failed");
+        let results =
+          await BaseMySQLProvider.executePromisedQueryFilterOkPacket(
+            connection,
+            query,
+            qParams,
+          );
+        if (results.length === 2) {
+          for (let obj of results) {
+            if (obj.account_no === result.from_account) {
+              qParams = [
+                result.converted_amount,
+                result.converted_amount,
+                result.from_account,
+              ];
+              query = ` UPDATE accounts SET total_balance = total_balance + ?, total_transfer = total_transfer - ? WHERE account_no = ?  `;
+              let execute =
+                await BaseMySQLProvider.executePromisedQueryFilterOkPacket(
+                  connection,
+                  query,
+                  qParams,
+                );
+              if (execute.affectedRows !== 1) {
+                throw new Error(errorCodes.TRANSFER_FAILED.message);
+              }
+            } else {
+              let transferAmount = await module.exports.exchange({
+                fromCurrency: result.currency,
+                toCurrency: obj.currency_code,
+                amount: result.amount,
+              });
+              qParams = [
+                transferAmount,
+                transferAmount,
+                result.to_account,
+                transferAmount,
+              ];
+              if (Number(obj.total_balance) < Number(transferAmount)) {
+                throw new Error(errorCodes.INSUFFICIENT_BALANCE.message);
+              }
+              query = ` UPDATE accounts SET total_balance = total_balance - ?, total_deposit = total_deposit - ? WHERE account_no = ? AND total_balance >= ?`;
+              let execute =
+                await BaseMySQLProvider.executePromisedQueryFilterOkPacket(
+                  connection,
+                  query,
+                  qParams,
+                );
+              if (execute.affectedRows !== 1) {
+                throw new Error(errorCodes.TRANSFER_FAILED.message);
+              }
             }
           }
-        }
-
-        for (let obj of results) {
-          
-          if (obj.account_no === result.from_account) {
-            const transactionId =
-              "TXN" + Date.now() + Math.floor(Math.random() * 1000);
-            qParams = [
-              transactionId,
-              result.username,
-              "REVERSE_OUT",
-              result.to_account,
-              obj.account_no,
-              result.currency,
-              result.amount,
-              result.converted_amount,
-              "SUCCESS",
-            ];
-            query = `INSERT INTO transactions (
+          for (let obj of results) {
+            if (obj.account_no === result.from_account) {
+              const transactionId =
+                "TXN" + Date.now() + Math.floor(Math.random() * 1000);
+              qParams = [
+                transactionId,
+                result.username,
+                "REVERSE_OUT",
+                result.to_account,
+                obj.account_no,
+                result.currency,
+                result.amount,
+                result.converted_amount,
+                "SUCCESS",
+              ];
+              query = `INSERT INTO transactions (
     transaction_id,
     username,
     type,
@@ -588,31 +491,31 @@ VALUES
 )
 VALUES
 (?,?,?,?,?,?,?,?,?)`;
-            await BaseMySQLProvider.executePromisedQueryFilterOkPacket(
-              connection,
-              query,
-              qParams,
-            );
-          } else {
-            let transferAmount = await module.exports.exchange({
-            fromCurrency: result.currency,
-            toCurrency: obj.currency_code,
-            amount: result.amount,
-          });
-            const transactionId =
-              "TXN" + Date.now() + Math.floor(Math.random() * 1000);
-            qParams = [
-              transactionId,
-              result.username,
-              "REVERSE_IN",
-              obj.account_no,
-              result.from_account,
-              result.currency,
-              result.amount,
-              transferAmount,
-              "SUCCESS",
-            ];
-            query = `INSERT INTO transactions (
+              await BaseMySQLProvider.executePromisedQueryFilterOkPacket(
+                connection,
+                query,
+                qParams,
+              );
+            } else {
+              let transferAmount = await module.exports.exchange({
+                fromCurrency: result.currency,
+                toCurrency: obj.currency_code,
+                amount: result.amount,
+              });
+              const transactionId =
+                "TXN" + Date.now() + Math.floor(Math.random() * 1000);
+              qParams = [
+                transactionId,
+                result.username,
+                "REVERSE_IN",
+                obj.account_no,
+                result.from_account,
+                result.currency,
+                result.amount,
+                transferAmount,
+                "SUCCESS",
+              ];
+              query = `INSERT INTO transactions (
     transaction_id,
     username,
     type,
@@ -625,49 +528,38 @@ VALUES
 )
 VALUES
 (?,?,?,?,?,?,?,?,?)`;
-            await BaseMySQLProvider.executePromisedQueryFilterOkPacket(
-              connection,
-              query,
-              qParams,
-            );
+              await BaseMySQLProvider.executePromisedQueryFilterOkPacket(
+                connection,
+                query,
+                qParams,
+              );
+            }
           }
+          qParams = [params.transaction_id];
+          query = ` UPDATE transactions SET is_reversed = 1 WHERE transaction_id = ?`;
+          await BaseMySQLProvider.executePromisedQueryFilterOkPacket(
+            connection,
+            query,
+            qParams,
+          );
+        } else {
+          throw new Error(errorCodes.INVALID_TRANSFER_ACCOUNTS.message);
         }
-
-        qParams = [params.transaction_id]
-        query = ` UPDATE transactions SET is_reversed = 1 WHERE transaction_id = ?`;
-        await BaseMySQLProvider.executePromisedQueryFilterOkPacket(
-        connection,
-        query,
-        qParams,
-      );
       } else {
-        throw new Error("Invalid Accounts");
-      }
-    } else {
-        throw new Error("Invalid TransactionId");
+        throw new Error(errorCodes.INVALID_TRANSACTIONID.message);
       }
     } catch (error) {
-      // appLogger.error(null, null, "Error in Repo: userRepo, Method: getUserId", err);
-      if (!is_external_connection) {
-        BaseMySQLProvider.rollbackTransaction(connection);
-      }
+      BaseMySQLProvider.rollbackTransaction(connection);
       throw error;
     } finally {
-      // appLogger.info(null, "End of Repo: UserRepo, Method: getUserId");
-      if (!is_external_connection) {
-        BaseMySQLProvider.commitTransaction(connection);
-      }
+      BaseMySQLProvider.commitTransaction(connection);
     }
   },
 
   updateProfile: async (params) => {
-    let is_external_connection = true;
+    let connection;
     try {
-      // appLogger.info(null, "Start of Repo: UserRepo, Method: getUserId");
-      if (!connection) {
-        is_external_connection = false;
-        connection = await BaseMySQLProvider.getPoolConnectionTransaction();
-      }
+      connection = await BaseMySQLProvider.getPoolConnectionTransaction();
       const qParams = [
         params.email,
         params.mobile,
@@ -676,23 +568,16 @@ VALUES
         params.username,
       ];
       const query = ` UPDATE users SET email = ?  , mobile_number = ? , identity_number = ? , fullname = ?  WHERE username = ? `;
-
       return await BaseMySQLProvider.executePromisedQueryFilterOkPacket(
         connection,
         query,
         qParams,
       );
     } catch (error) {
-      // appLogger.error(null, null, "Error in Repo: userRepo, Method: getUserId", err);
-      if (!is_external_connection) {
-        BaseMySQLProvider.rollbackTransaction(connection);
-      }
+      BaseMySQLProvider.rollbackTransaction(connection);
       throw error;
     } finally {
-      // appLogger.info(null, "End of Repo: UserRepo, Method: getUserId");
-      if (!is_external_connection) {
-        BaseMySQLProvider.commitTransaction(connection);
-      }
+      BaseMySQLProvider.commitTransaction(connection);
     }
   },
 };
