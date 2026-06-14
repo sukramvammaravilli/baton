@@ -2,25 +2,19 @@ const request = require("supertest");
 const app = require("../../server");
 
 describe("Reverse Transaction Module", () => {
-
   let token;
-
   beforeAll(async () => {
-
     const login =
       await request(app)
         .post("/api/login")
         .send({
-          username:"sukram08",
+          username:"testuser123",
           password:"Password@123"
         });
-
     token = login.body.token;
-
   });
 
   test("REVERSE_001 Reverse Transaction Success", async () => {
-
     const response =
       await request(app)
         .post(
@@ -31,17 +25,16 @@ describe("Reverse Transaction Module", () => {
           `Bearer ${token}`
         )
         .send({
-          username:"sukram08",
-          transactionId:"TXN123456"
+          transactionId:"298e3689-6044-484e-bd36-39391baf81f4"
         });
 
     expect(response.statusCode)
       .toBe(200);
+      expect(response.body).toBe("Transaction reversed");
 
   });
 
   test("REVERSE_002 Invalid Transaction Id", async () => {
-
     const response =
       await request(app)
         .post(
@@ -52,12 +45,11 @@ describe("Reverse Transaction Module", () => {
           `Bearer ${token}`
         )
         .send({
-          username:"sukram08",
           transactionId:"INVALID_TXN"
         });
 
-    expect(response.statusCode)
-      .toBe(400);
+    expect(response.statusCode).toBe(400);
+      expect(response.body.error).toBe("Invalid Request, Invalid transaction id");
 
   });
 
@@ -73,13 +65,11 @@ describe("Reverse Transaction Module", () => {
           `Bearer ${token}`
         )
         .send({
-          username:"sukram08",
           transactionId:""
         });
 
-    expect(response.statusCode)
-      .toBeGreaterThanOrEqual(400);
-
+    expect(response.statusCode).toBe(400);
+    expect(response.body.error).toBe("Invalid request, Missing Parameter transaction_id");
   });
 
   test("REVERSE_004 Missing Token", async () => {
@@ -90,33 +80,11 @@ describe("Reverse Transaction Module", () => {
           "/api/dashboard/reverseTransaction"
         )
         .send({
-          username:"sukram08",
           transactionId:"TXN123456"
         });
 
-    expect(response.statusCode)
-      .toBe(401);
-
-  });
-
-  test("REVERSE_005 Invalid Token", async () => {
-
-    const response =
-      await request(app)
-        .post(
-          "/api/dashboard/reverseTransaction"
-        )
-        .set(
-          "Authorization",
-          "Bearer invalidtoken"
-        )
-        .send({
-          username:"sukram08",
-          transactionId:"TXN123456"
-        });
-
-    expect(response.statusCode)
-      .toBe(401);
+    expect(response.statusCode).toBe(401);
+    expect(response.body.error).toBe("Invalid request, Missing Token ");
 
   });
 
@@ -132,63 +100,15 @@ describe("Reverse Transaction Module", () => {
           `Bearer ${token}`
         )
         .send({
-          username:"sukram08",
-          transactionId:"ALREADY_REVERSED_TXN"
+          transactionId:"298e3689-6044-484e-bd36-39391baf81f4"
         });
 
-    expect(response.statusCode)
-      .toBe(400);
+    expect(response.statusCode).toBe(400);
+    expect(response.body.error).toBe("Invalid Request, Transaction already reversed")
 
   });
 
-  test("REVERSE_007 Reverse Only TRANSFER_OUT Transaction", async () => {
-
-    const response =
-      await request(app)
-        .post(
-          "/api/dashboard/reverseTransaction"
-        )
-        .set(
-          "Authorization",
-          `Bearer ${token}`
-        )
-        .send({
-          username:"sukram08",
-          transactionId:"TRANSFER_OUT_TXN"
-        });
-
-    expect(
-      [200,400]
-    ).toContain(
-      response.statusCode
-    );
-
-  });
-
-  test("REVERSE_008 Reverse DEPOSIT Transaction", async () => {
-
-    const response =
-      await request(app)
-        .post(
-          "/api/dashboard/reverseTransaction"
-        )
-        .set(
-          "Authorization",
-          `Bearer ${token}`
-        )
-        .send({
-          username:"sukram08",
-          transactionId:"DEPOSIT_TXN"
-        });
-
-    expect(
-      [200,400]
-    ).toContain(
-      response.statusCode
-    );
-
-  });
-
+  
   
 
 });

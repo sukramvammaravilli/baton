@@ -7,32 +7,23 @@
 <title>
     Multi Currency Wallet
 </title>
-
 <link rel="preconnect"
       href="https://fonts.googleapis.com">
-
 <link rel="preconnect"
       href="https://fonts.gstatic.com"
       crossorigin>
-
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet">
-
 <link rel="stylesheet"
       href="dashboard.css">
-
 <link rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
 </head>
-
 <body>
 <div class="dashboard-container">
-
     <!-- ========================= -->
     <!-- SIDEBAR -->
     <!-- ========================= -->
-
     <aside class="sidebar">
         <div class="logo">
             <i class="fa-solid fa-wallet"></i>
@@ -45,58 +36,45 @@
                 </span>
             </div>
         </div>
-
         <ul class="sidebar-menu">
-
             <li class="active"
-        onclick="showSection('dashboardSection', this)">
+        data-section= "dashboardSection">
         <i class="fa-solid fa-house"></i>
         <span>Dashboard</span>
     </li>
-
-    <li onclick="showSection('profileSection', this)">
+    <li data-section= "profileSection">
         <i class="fa-solid fa-user"></i>
         <span>Profile</span>
     </li>
-
-    <li onclick="showSection('depositSection', this)">
+    <li data-section= "depositSection">
         <i class="fa-solid fa-money-bill-wave"></i>
         <span>Deposit</span>
     </li>
-
-    <li onclick="showSection('transferSection', this)">
+    <li data-section= "transferSection">
         <i class="fa-solid fa-arrow-right-arrow-left"></i>
         <span>Transfer</span>
     </li>
-
-    <li onclick="showSection('transactionSection', this)">
+    <li data-section= "transactionSection">
         <i class="fa-solid fa-clock-rotate-left"></i>
         <span>Transactions</span>
     </li>
-
-    <li onclick="showSection('exchangeSection', this)">
+    <li data-section= "exchangeSection">
         <i class="fa-solid fa-coins"></i>
         <span>Currency Exchange</span>
     </li>
-
     <li id="logoutBtn">
         <i class="fa-solid fa-right-from-bracket"></i>
         <span>Logout</span>
     </li>
-
 </ul>
-
     </aside>
-
     <!-- ========================= -->
     <!-- MAIN CONTENT -->
     <!-- ========================= -->
-
     <main class="main-content">
         <!-- ========================= -->
         <!-- DASHBOARD SECTION -->
         <!-- ========================= -->
-
         <section
             id="dashboardSection"
             class="page-section active">
@@ -115,7 +93,6 @@
         </p>
     </div>
 </div>
-
 <div id="dashboardContent">
      <div class="dashboard-filter">
                 <label>
@@ -134,7 +111,7 @@
                             Total Balance
                         </h3>
                         <h2 id="totalBalance">
-                            $0.00
+                            0.00
                         </h2>
                     </div>
                     <i class="fa-solid fa-sack-dollar"></i>
@@ -145,7 +122,7 @@
                             Total Deposit
                         </h3>
                         <h2 id="totalDeposit">
-                            $0.00
+                            0.00
                         </h2>
                     </div>
                     <i class="fa-solid fa-arrow-down"></i>
@@ -153,7 +130,7 @@
                 <div class="summary-card expense">
                     <div>
                         <h3>
-                            $Total Transfer
+                            Total Transfer
                         </h3>
                         <h2 id="totalTransfer">
                             0.00
@@ -163,8 +140,7 @@
                 </div>
                 <div
     class="summary-card exchange-card"
-    onclick="toggleRates()">
-
+    id="exchangeCard">
     <div>
         <h3>
             Exchange Rates
@@ -173,20 +149,14 @@
             w.r.t USD
         </h2>
     </div>
-
     <i class="fa-solid fa-globe"></i>
-
 </div>
             </div>
-
             <div
     id="exchangeRatesPanel"
     style="display:none; margin-top:20px;">
-
     <div class="table-container">
-
         <table>
-
             <thead>
                 <tr>
                     <th>Currency Symbol</th>
@@ -195,21 +165,15 @@
                     <th>Rate</th>
                 </tr>
             </thead>
-
             <tbody id="ratesTableBody">
             </tbody>
-
         </table>
-
     </div>
-
 </div>
         </section>
-
                 <!-- ========================= -->
         <!-- PROFILE SECTION -->
         <!-- ========================= -->
-
         <section
             id="profileSection"
             class="page-section">
@@ -250,13 +214,6 @@
                     </div>
                     <div class="detail-item">
                         <label>
-                            Currency
-                        </label>
-                        <h3 id="profileCurrency">
-                        </h3>
-                    </div>
-                    <div class="detail-item">
-                        <label>
                             PAN / National ID
                         </label>
                         <h3 id="profileIdentity">
@@ -264,11 +221,9 @@
                     </div>
                 </div>
             </div>
-
             <!-- ========================= -->
             <!-- UPDATE PROFILE -->
             <!-- ========================= -->
-
             <div class="section-title">
                 <h2>
                     Update Profile
@@ -303,7 +258,6 @@
                             id="updateMobile"
                             required>
                     </div>
-                    
                     <div class="form-group">
                         <label>
                             PAN / National ID
@@ -319,50 +273,34 @@
                     </button>
                 </form>
             </div>
-
             <!-- ========================= -->
             <!-- ACCOUNT MANAGEMENT -->
             <!-- ========================= -->
-
       <div class="account-management-card">
-
     <div class="card-header">
-
         <div>
-
             <h3>
                 <i class="fa-solid fa-wallet"></i>
                 Account Management
             </h3>
-
             <p>
                 Manage your wallet accounts
             </p>
-
         </div>
-
         <button
             class="add-account-btn"
-            onclick="openAccountModal()">
-
+            id="openAccountBtn">
             <i class="fa-solid fa-plus"></i>
             Add Account
-
         </button>
-
     </div>
-
     <div id="accountList">
     </div>
-
 </div>
-
         </section>
-
         <!-- ========================= -->
         <!-- DEPOSIT SECTION -->
         <!-- ========================= -->
-
         <section
             id="depositSection"
             class="page-section">
@@ -405,11 +343,9 @@
                 </form>
             </div>
         </section>
-
         <!-- ========================= -->
         <!-- TRANSFER SECTION -->
         <!-- ========================= -->
-
         <section
             id="transferSection"
             class="page-section">
@@ -461,11 +397,9 @@
                 </form>
             </div>
         </section>
-
                 <!-- ========================= -->
         <!-- TRANSACTIONS SECTION -->
         <!-- ========================= -->
-
         <section
             id="transactionSection"
             class="page-section">
@@ -517,7 +451,12 @@
                             <th>
                                 Created At
                             </th>
-                            <th> Action</th>
+                            <th> 
+                                Action
+                            </th>
+                            <th>
+                                Reference Transaction Id
+                            </th>
                         </tr>
                     </thead>
                     <tbody id="transactionTable">
@@ -530,11 +469,9 @@
                 </table>
             </div>
         </section>
-
         <!-- ========================= -->
         <!-- CURRENCY EXCHANGE -->
         <!-- ========================= -->
-
         <section
             id="exchangeSection"
             class="page-section">
@@ -584,52 +521,16 @@
                 </div>
             </div>
         </section>
-
-        <!-- ========================= -->
-        <!-- LIVE EXCHANGE RATE TABLE -->
-        <!-- Dashboard Section API -->
-        <!-- ========================= -->
-
-        <div
-            id="liveRatesSection"
-            style="display:none;">
-            <div class="section-title">
-                <h2>
-                    Exchange Rates
-                </h2>
-            </div>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>
-                                Currency
-                            </th>
-                            <th>
-                                Exchange Rate
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody
-                        id="ratesContainer">
-                    </tbody>
-              </table>
-            </div>
-        </div>
-
-        <!-- ========================= -->
+                <!-- ========================= -->
         <!-- LOADER -->
         <!-- ========================= -->
-
         <div
             id="loader"
             class="loader">
         </div>
-
         <!-- ========================= -->
         <!-- FOOTER -->
         <!-- ========================= -->
-
         <footer
             class="dashboard-footer">
             <p>
@@ -646,52 +547,42 @@
 <div
     id="accountModal"
     class="modal">
-
     <div class="modal-content">
-
         <div class="modal-header">
-
             <h3>
                 Add Account
             </h3>
-
             <span
-                onclick="closeAccountModal()">
-
+                id="closeModalBtn">
                 &times;
-
             </span>
-
         </div>
-
         <input
             type="text"
             id="newAccountNumber"
+            class="modal-field"
             placeholder="Enter Account Number">
+        <div class="input-box">
 
+    <select id="account_currency" class="modal-field">
+    <option value="">Select Currency</option>
+</select>
+</div>
         <div class="modal-footer">
-
             <button
                 class="cancel-btn"
-                onclick="closeAccountModal()">
-
+                id="cancelModalBtn">
                 Cancel
-
             </button>
-
             <button
                 class="save-btn"
-                onclick="addAccount()">
-
+                id="saveAccountBtn">
                 Add Account
-
             </button>
-
         </div>
-
     </div>
-
 </div>
 <script src="app.js"></script>
+<div id="toast" class="toast"></div>
 </body>
 </html>

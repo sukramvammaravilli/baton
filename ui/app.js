@@ -37,7 +37,6 @@ async function toggleRates() {
     panel.style.display = "none";
   }
 }
-
 /* =========================================
    HELPERS
 ========================================= */
@@ -49,8 +48,26 @@ function $(id) {
   return document.getElementById(id);
 }
 
-function showMessage(message) {
-  alert(message);
+function showMessage(
+  message,
+  type = "success"
+) {
+  const toast =
+    $("toast");
+
+  toast.innerText =
+    message;
+
+  toast.className =
+    `toast ${type}`;
+
+  toast.style.display =
+    "block";
+
+  setTimeout(() => {
+    toast.style.display =
+      "none";
+  }, 3000);
 }
 
 function showLoader() {
@@ -76,7 +93,10 @@ async function apiFetch(url, options = {}) {
   const response = await fetch(url, options);
   if (response.status === 401) {
     localStorage.clear();
-    alert("Session Expired. Please login again.");
+    showMessage(
+  "Session Expired. Please login again.",
+  "error"
+);
     window.location.href = "/index.html";
     return null;
   }
@@ -107,7 +127,7 @@ async function loadRatesTable() {
             `;
     });
   } catch (error) {
-    showMessage(error);
+    showMessage(error,"error");
   }
 }
 
@@ -228,14 +248,11 @@ async function loadProfile() {
     $("profileEmail").innerText = (profileData.email || "-").toUpperCase();
     $("profilePhone").innerText =
       `${profileData.country_code || ""} ${profileData.mobile_number || ""}`.toUpperCase();
-    $("profileCurrency").innerText = (
-      profileData.currency_code || "-"
-    ).toUpperCase();
     $("profileIdentity").innerText = (
       profileData.identity_number || "-"
     ).toUpperCase();
   } catch (error) {
-    showMessage(error);
+    showMessage(profileData.error || profileData.message , "error");
   }
 }
 /* =========================================
@@ -257,7 +274,7 @@ async function loadAccounts() {
       document.getElementById("dashboardContent").style.display = "none";
     }
   } catch (error) {
-    showMessage(error);
+    showMessage(accountData.error || accountData.message , "error");
   }
 }
 
@@ -304,13 +321,12 @@ async function loadDashboardSummary(accountNo) {
     $("totalTransfer").innerText =
       currency_detail.currency_symbol + " " + details.total_transfer || 0;
   } catch (error) {
-    showMessage(error);
+    showMessage(data.error || data.message , "error");
   }
 }
 /* =========================================
    TRANSACTIONS
 ========================================= */
-
 async function loadTransactions(accountNo) {
   try {
     const response = await apiFetch(
@@ -319,7 +335,7 @@ async function loadTransactions(accountNo) {
     const data = await response.json();
     renderTransactions(data);
   } catch (error) {
-    showMessage(error);
+    showMessage(data.error || data.message , "error");
   }
 }
 
@@ -336,13 +352,16 @@ async function reverseTransaction(transactionId, account_no) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      transactionId
+      transactionId,
     }),
   });
+  const data = await response.json();
   if (response.ok) {
-    showMessage("Transaction Reversed");
+    showMessage(data , "success");
     loadTransactions(account_no);
     loadDashboardSummary(account_no);
+  } else {
+    showMessage(data.error || data.message , "error");
   }
 }
 
@@ -359,7 +378,16 @@ function renderTransactions(data) {
         `;
     return;
   }
+
   data.forEach((item) => {
+
+  const positiveTypes = ["DEPOSIT", "TRANSFER_IN", "REVERSE_IN"];
+
+  const isPositive = positiveTypes.includes(item.type);
+
+  const amountClass = isPositive ? "amount-positive" : "amount-negative";
+
+  const amountSign = isPositive ? "+" : "-";
     table.innerHTML += `
             <tr>
                 <td>${item.transaction_id}</td>
@@ -368,9 +396,26 @@ function renderTransactions(data) {
                 <td>${item.from_account}</td>
                 <td>${item.to_account}</td>
                 <td>${item.currency}</td>
-                <td>${item.amount}</td>
-                <td>${item.converted_amount}</td>
-                <td>${item.status}</td>
+                <td class="${amountClass}">
+  ${amountSign}${item.amount}
+</td>
+
+<td class="${amountClass}">
+  ${amountSign}${item.converted_amount}
+</td>
+                <td>
+  <span class="
+    ${
+      item.status === "SUCCESS"
+        ? "status-success"
+        : item.status === "FAILED"
+          ? "status-failed"
+          : "status-pending"
+    }
+  ">
+      ${item.status}
+  </span>
+</td>
                 <td>
     ${formatDate(item.created_at)}
 </td>
@@ -393,6 +438,9 @@ function renderTransactions(data) {
         : "-"
     }
 </td>
+<td>
+${item.reversal_of_transaction_id}
+</td>
             </tr>
         `;
   });
@@ -409,9 +457,9 @@ async function loadCurrencies() {
       "toCurrency",
       "depositCurrency",
       "transferCurrency",
+      "account_currency",
     ].forEach((id) => {
       const dropdown = $(id);
-
       if (!dropdown) {
         return;
       }
@@ -425,14 +473,16 @@ async function loadCurrencies() {
       });
     });
   } catch (error) {
-    showMessage(error);
+    showMessage(currencyData.error || currencyData.message , "error");
   }
 }
 
 async function addAccount() {
   const accountNo = $("newAccountNumber").value;
+  const currencyCode = $("account_currency").value;
   const payload = {
     accountNo,
+    currencyCode,
   };
   const response = await apiFetch(API.addAccount, {
     method: "POST",
@@ -441,10 +491,13 @@ async function addAccount() {
     },
     body: JSON.stringify(payload),
   });
+  const data = await response.json();
   if (response.ok) {
-    showMessage("Account Added");
+    showMessage(data, "success");
     closeAccountModal();
     loadAccounts();
+  } else {
+    showMessage(data.error || data.message , "error");
   }
 }
 
@@ -460,11 +513,13 @@ async function removeAccount(account) {
     },
     body: JSON.stringify(payload),
   });
-
+  const data = await response.json();
   if (response.ok) {
-    showMessage("Account Removed");
+    showMessage(data, "success");
     closeAccountModal();
     loadAccounts();
+  } else {
+    showMessage(data.error || data.message , "error");
   }
 }
 
@@ -476,7 +531,6 @@ $("updateProfileForm")?.addEventListener("submit", async function (e) {
     mobile: $("updateMobile").value,
     identityNumber: $("updateIdentity").value,
   };
-
   const response = await apiFetch(API.updateProfile, {
     method: "PUT",
     headers: {
@@ -484,9 +538,12 @@ $("updateProfileForm")?.addEventListener("submit", async function (e) {
     },
     body: JSON.stringify(payload),
   });
+  const data = await response.json();
   if (response.ok) {
-    showMessage("Profile Updated");
+    showMessage(data, "success");
     await loadProfile();
+  } else {
+    showMessage(data.error || data.message , "error");
   }
 });
 /* =========================================
@@ -506,9 +563,12 @@ $("depositForm")?.addEventListener("submit", async function (e) {
     },
     body: JSON.stringify(payload),
   });
+  const data = await response.json();
   if (response.ok) {
-    showMessage("Deposit Successful");
+    showMessage(data, "success");
     loadAccounts();
+  } else {
+    showMessage(data.error || data.message , "error");
   }
 });
 /* =========================================
@@ -529,9 +589,12 @@ $("transferForm")?.addEventListener("submit", async function (e) {
     },
     body: JSON.stringify(payload),
   });
+  const data = await response.json();
   if (response.ok) {
-    showMessage("Transfer Successful");
+    showMessage(data, "success");
     loadAccounts();
+  } else {
+    showMessage(data.error || data.message , "error");
   }
 });
 /* =========================================
@@ -572,7 +635,9 @@ $("logoutBtn")?.addEventListener("click", async function () {
     return;
   }
   const response = await apiFetch(API.logout);
+  const data = await response.json();
   if (response.ok) {
+    showMessage(data, "success");
     localStorage.clear();
     window.location.href = "/index.html";
   }
@@ -587,8 +652,25 @@ document.addEventListener("DOMContentLoaded", async function () {
     await loadCurrencies();
     await loadAccounts();
   } catch (error) {
-    showMessage(error);
+    showMessage(error , "error" );
   } finally {
     hideLoader();
   }
+  document
+    .querySelectorAll(".sidebar-menu li[data-section]")
+    .forEach((item) => {
+      item.addEventListener("click", function () {
+        showSection(this.dataset.section, this);
+      });
+    });
+
+  $("exchangeCard")?.addEventListener("click", toggleRates);
+
+  $("openAccountBtn")?.addEventListener("click", openAccountModal);
+
+  $("closeModalBtn")?.addEventListener("click", closeAccountModal);
+
+  $("cancelModalBtn")?.addEventListener("click", closeAccountModal);
+
+  $("saveAccountBtn")?.addEventListener("click", addAccount);
 });

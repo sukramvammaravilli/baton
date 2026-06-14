@@ -1,221 +1,62 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Wallet Login</title>
-
 <link rel="stylesheet"
       href="style.css">
-
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
       rel="stylesheet">
-
 </head>
-
 <body>
-
 <div class="wrapper">
-
     <div class="card">
-
         <h1>Login</h1>
-
         <form id="loginForm">
-
             <div class="input-box">
-
                 <label>
                     Username
                 </label>
-
                 <div class="input-group">
-
                     <i class="fa-solid fa-user"></i>
-
                     <input
                         type="text"
                         id="username"
                         placeholder="Type your username"
                         required>
-
                 </div>
-
             </div>
-
             <div class="input-box">
-
                 <label>
                     Password
                 </label>
-
                 <div class="input-group">
-
                     <i class="fa-solid fa-lock"></i>
-
                     <input
                         type="password"
                         id="password"
                         placeholder="Type your password"
                         required>
-
                 </div>
-
             </div>
-
             <button
                 type="submit"
                 class="btn">
-
                 LOGIN
-
             </button>
-
             <p id="message"></p>
-
             <div class="signup-link">
-
                 Don't have an account?
-
                 <a href="signup.html">
-
                     Sign Up
-
                 </a>
-
             </div>
-
         </form>
-
     </div>
-
 </div>
-
 <div id="toast" class="toast"></div>
-
-<script>
-
-function showToast(message, type) {
-
-    const toast =
-        document.getElementById('toast');
-
-    toast.innerText =
-        message;
-
-    toast.className =
-        `toast ${type}`;
-
-    toast.style.display =
-        'block';
-
-    setTimeout(() => {
-
-        toast.style.display =
-            'none';
-
-    }, 3000);
-
-}
-
-document
-.getElementById('loginForm')
-.addEventListener('submit', async (e) => {
-
-    e.preventDefault();
-
-    const username =
-        document.getElementById('username').value;
-
-    const password =
-        document.getElementById('password').value;
-
-    try {
-
-        const response =
-            await fetch('/api/login', {
-
-                method: 'POST',
-
-                headers: {
-
-                    'Content-Type':
-                    'application/json'
-
-                },
-
-                body: JSON.stringify({
-
-                    username,
-                    password
-
-                })
-
-            });
-
-        const data =
-            await response.json();
-
-        if (response.ok) {
-
-            showToast(
-                'Login Successful',
-                'success'
-            );
-
-            localStorage.setItem(
-                'token',
-                data.token
-            );
-
-            localStorage.setItem(
-                'fullname',
-                data.fullname
-            );
-
-            localStorage.setItem(
-                'username',
-                data.username
-            );
-
-            setTimeout(() => {
-
-                window.location.href =
-                    '/dashboard.html';
-
-            }, 1500);
-
-        } else {
-
-            showToast(
-                data.error ||
-                'Invalid Username or Password',
-                'error'
-            );
-
-        }
-
-    } catch (error) {
-
-        console.error(error);
-
-        showToast(
-            'Server Error. Please try again.',
-            'error'
-        );
-
-    }
-
-});
-
-</script>
-
+<script src="login.js"></script>
 </body>
-
 </html>

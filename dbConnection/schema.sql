@@ -1,4 +1,4 @@
-CREATE DATABASE  IF NOT EXISTS `wallet_system`
+CREATE DATABASE  IF NOT EXISTS `wallet_system`;
 
 USE `wallet_system`;
 
@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS `accounts` (
   `total_transfer` decimal(18,3) DEFAULT '0.000',
   `status` enum('ACTIVE','INACTIVE') DEFAULT 'ACTIVE',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `currency_code` varchar(3) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `account_no` (`account_no`),
   KEY `username` (`username`),
@@ -20,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `accounts` (
 
 CREATE TABLE IF NOT EXISTS `currency` (
   `currency_name` varchar(100) NOT NULL,
-  `currency_code` varchar(5) NOT NULL,
+  `currency_code` varchar(3) NOT NULL,
   `currency_symbol` varchar(20) NOT NULL,
   `exchange_rate` decimal(18,3) NOT NULL,
   UNIQUE KEY `currency_name` (`currency_name`),
@@ -40,6 +41,7 @@ CREATE TABLE IF NOT EXISTS `transactions` (
   `status` enum('SUCCESS','PENDING','FAILED') DEFAULT 'PENDING',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `is_reversed` tinyint(1) DEFAULT '0',
+  `reversal_of_transaction_id` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `transaction_id` (`transaction_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -61,7 +63,6 @@ CREATE TABLE IF NOT EXISTS `users` (
   `username` varchar(20) NOT NULL,
   `fullname` varchar(30) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `currency_code` varchar(3) NOT NULL,
   `mobile_number` varchar(20) NOT NULL,
   `identity_number` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,

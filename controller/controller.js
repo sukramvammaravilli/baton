@@ -57,7 +57,7 @@ module.exports = {
       };
       let paramsValidation = Object.keys(params);
       for (let param of paramsValidation) {
-        if (param === "amount" && params[param] < 0) {
+        if (param === "amount" && params[param] <= 0) {
           return res.status(errorCodes.INVALID_AMOUNT_EXCHANGE.status).json({
             error: errorCodes.INVALID_AMOUNT_EXCHANGE.message,
           });
@@ -73,6 +73,11 @@ module.exports = {
         convertedAmount: result,
       });
     } catch (error) {
+      if (error.message) {
+        return res.status(errorCodes.INVALID_ACCOUNT_FORMAT.status).json({
+          error: error.message,
+        });
+      }
       return res.status(errorCodes.INTERNAL_SERVER_ERROR.status).json({
         error: errorCodes.INTERNAL_SERVER_ERROR.message,
       });
@@ -84,7 +89,6 @@ module.exports = {
       const params = {
         username: req.user.username,
         email: req.body.email,
-        currency_code: req.body.currencyCode,
         mobile: req.body.mobile,
         identityNumber: req.body.identityNumber,
         fullname: req.body.fullname,
@@ -119,6 +123,7 @@ module.exports = {
     try {
       const username = req.user.username;
       const accountNumber = req.body.accountNo;
+      const currency_code = req.body.currencyCode.split(",")[0];
       if (!username) {
         return res.status(errorCodes.MISSING_USERNAME.status).json({
           error: errorCodes.MISSING_USERNAME.message,
@@ -129,9 +134,25 @@ module.exports = {
           error: errorCodes.MISSING_ACCOUNT.message,
         });
       }
-      await dashboardService.addAccount(username, accountNumber);
+      if (!currency_code) {
+        return res.status(errorCodes.MISSING_CURRENCY.status).json({
+          error: errorCodes.MISSING_CURRENCY.message,
+        });
+      }
+      const account_regex = /^[a-zA-Z0-9_]{3,20}$/;
+      if (!account_regex.test(accountNumber)) {
+        return res.status(errorCodes.INVALID_ACCOUNT_FORMAT.status).json({
+          error: errorCodes.INVALID_ACCOUNT_FORMAT.message,
+        });
+      }
+      await dashboardService.addAccount(username, accountNumber, currency_code);
       return res.status(200).json("Account added successfully");
     } catch (error) {
+      if (error.message) {
+        return res.status(errorCodes.INVALID_ACCOUNT_FORMAT.status).json({
+          error: error.message,
+        });
+      }
       return res.status(errorCodes.INTERNAL_SERVER_ERROR.status).json({
         error: errorCodes.INTERNAL_SERVER_ERROR.message,
       });
@@ -155,6 +176,11 @@ module.exports = {
       await dashboardService.removeAccount(username, accountNumber);
       return res.status(200).json("Removed account successfully");
     } catch (error) {
+      if (error.message) {
+        return res.status(errorCodes.ACCOUNT_NOT_EXIST.status).json({
+          error: error.message,
+        });
+      }
       return res.status(errorCodes.INTERNAL_SERVER_ERROR.status).json({
         error: errorCodes.INTERNAL_SERVER_ERROR.message,
       });
@@ -171,7 +197,7 @@ module.exports = {
       };
       let paramsValidation = Object.keys(params);
       for (let param of paramsValidation) {
-        if (param === "amount" && params[param] < 0) {
+        if (param === "amount" && params[param] <= 0) {
           return res.status(errorCodes.INVALID_AMOUNT_DEPOSIT.status).json({
             error: errorCodes.INVALID_AMOUNT_DEPOSIT.message,
           });
@@ -182,18 +208,18 @@ module.exports = {
           });
         }
       }
-      const result = await dashboardService.deposit(params);
+      await dashboardService.deposit(params);
       return res.status(200).json("Deposit Success");
     } catch (error) {
-      if(error.message){
+      if (error.message) {
         return res.status(errorCodes.ACCOUNT_NOT_ACTIVE.status).json({
-          error: error.message
-        })
+          error: error.message,
+        });
       } else {
-      return res.status(errorCodes.INTERNAL_SERVER_ERROR.status).json({
-        error: errorCodes.INTERNAL_SERVER_ERROR.message,
-      });
-    }
+        return res.status(errorCodes.INTERNAL_SERVER_ERROR.status).json({
+          error: errorCodes.INTERNAL_SERVER_ERROR.message,
+        });
+      }
     }
   },
 
@@ -208,7 +234,7 @@ module.exports = {
       };
       let paramsValidation = Object.keys(params);
       for (let param of paramsValidation) {
-        if (param === "amount" && params[param] < 0) {
+        if (param === "amount" && params[param] <= 0) {
           return res.status(errorCodes.INVALID_AMOUNT_TRANSFER.status).json({
             error: errorCodes.INVALID_AMOUNT_TRANSFER.message,
           });
@@ -219,19 +245,24 @@ module.exports = {
           });
         }
       }
+      if(params.fromAccount === params.toAccount) {
+        return res.status(errorCodes.SELF_TRANSFER.status).json({
+            error: errorCodes.SELF_TRANSFER.message,
+          });
+      }
       const result = await dashboardService.transfer(params);
       return res.status(200).json("Transfer Success");
     } catch (error) {
-      if(error.message){
+      if (error.message) {
         return res.status(errorCodes.ACCOUNT_NOT_ACTIVE.status).json({
-          error: error.message
-        })
+          error: error.message,
+        });
       } else {
-      return res.status(errorCodes.INTERNAL_SERVER_ERROR.status).json({
-        error: errorCodes.INTERNAL_SERVER_ERROR.message,
-      });
+        return res.status(errorCodes.INTERNAL_SERVER_ERROR.status).json({
+          error: errorCodes.INTERNAL_SERVER_ERROR.message,
+        });
+      }
     }
-  }
   },
 
   getTransactions: async (req, res) => {
@@ -251,9 +282,15 @@ module.exports = {
       let result = await dashboardService.getTransactions(params);
       return res.status(200).json(result);
     } catch (error) {
-      return res.status(errorCodes.INTERNAL_SERVER_ERROR.status).json({
-        error: errorCodes.INTERNAL_SERVER_ERROR.message,
-      });
+      if (error.message) {
+        return res.status(errorCodes.ACCOUNT_NOT_ACTIVE.status).json({
+          error: error.message,
+        });
+      } else {
+        return res.status(errorCodes.INTERNAL_SERVER_ERROR.status).json({
+          error: errorCodes.INTERNAL_SERVER_ERROR.message,
+        });
+      }
     }
   },
 
@@ -274,15 +311,15 @@ module.exports = {
       await dashboardService.reverseTransaction(params);
       return res.status(200).json("Transaction reversed");
     } catch (error) {
-      if(error.message){
+      if (error.message) {
         return res.status(errorCodes.ACCOUNT_NOT_ACTIVE.status).json({
-          error: error.message
-        })
+          error: error.message,
+        });
       } else {
-      return res.status(errorCodes.INTERNAL_SERVER_ERROR.status).json({
-        error: errorCodes.INTERNAL_SERVER_ERROR.message,
-      });
-    }
+        return res.status(errorCodes.INTERNAL_SERVER_ERROR.status).json({
+          error: errorCodes.INTERNAL_SERVER_ERROR.message,
+        });
+      }
     }
   },
 };

@@ -73,7 +73,9 @@ body{
 .main-content{
   flex:1;
   margin-left:270px;
+  width:calc(100% - 270px);
   padding:30px;
+  overflow-x:hidden;
 }
 
 .top-header{
@@ -191,6 +193,7 @@ body{
     font-size:13px;
 }
 
+
 .reversed-label{
     color:grey;
     font-weight:600;
@@ -198,6 +201,40 @@ body{
 
 .reverse-btn:hover{
     opacity:.9;
+}
+
+.amount-positive{
+    color:#10b981;
+    font-weight:700;
+}
+
+.amount-negative{
+    color:#ef4444;
+    font-weight:700;
+}
+
+.status-success{
+    background:#dcfce7;
+    color:#16a34a;
+    padding:6px 12px;
+    border-radius:20px;
+    font-weight:600;
+}
+
+.status-failed{
+    background:#fee2e2;
+    color:#dc2626;
+    padding:6px 12px;
+    border-radius:20px;
+    font-weight:600;
+}
+
+.status-pending{
+    background:#fef3c7;
+    color:#d97706;
+    padding:6px 12px;
+    border-radius:20px;
+    font-weight:600;
 }
 
 .toast {
@@ -224,6 +261,17 @@ body{
 
 .toast.error {
     background-color: #dc3545;
+}
+
+@keyframes toastSlide {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 .exchange-card:hover{
@@ -656,14 +704,20 @@ thead{
 
 #transactionSection .table-container{
     height:500px;
+    width:100%;
+    overflow-x:auto;
     overflow-y:auto;
     border-radius:18px;
     background:#fff;
     box-shadow:var(--shadow);
+    position:relative;
+    z-index:1;
 }
 
 #transactionSection table{
     width:100%;
+    min-width:1500px;
+    border-collapse:collapse;
 }
 
 #transactionSection thead th{
@@ -904,6 +958,16 @@ thead{
     overflow:hidden;
 }
 
+.modal-field{
+    width:calc(100% - 50px);
+    margin:25px;
+    padding:14px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    font-size:15px;
+    box-sizing:border-box;
+}
+
 .modal-header{
     display:flex;
     justify-content:space-between;
@@ -916,14 +980,6 @@ thead{
     cursor:pointer;
     font-size:24px;
     font-weight:bold;
-}
-
-.modal-content input{
-    width:90%;
-    margin:25px;
-    padding:14px;
-    border:1px solid #ddd;
-    border-radius:10px;
 }
 
 .modal-footer{

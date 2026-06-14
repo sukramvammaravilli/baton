@@ -10,22 +10,21 @@ module.exports = {
         params.username,
         params.fullname,
         params.email,
-        params.currency_code,
         params.mobile,
         params.identityNumber,
         params.password,
       ];
-      let query = ` INSERT INTO users ( username, fullname, email, currency_code, mobile_number, identity_number, password ) VALUES (?,?,?,?,?,?,?) `;
+      let query = ` INSERT INTO users ( username, fullname, email, mobile_number, identity_number, password ) VALUES (?,?,?,?,?,?) `;
       return await BaseMySQLProvider.executePromisedQueryFilterOkPacket(
         connection,
         query,
         qParams,
       );
     } catch (error) {
-      BaseMySQLProvider.rollbackTransaction(connection);
+      await BaseMySQLProvider.rollbackTransaction(connection);
       throw error;
     } finally {
-      BaseMySQLProvider.commitTransaction(connection);
+      await BaseMySQLProvider.commitTransaction(connection);
     }
   },
 
@@ -41,10 +40,10 @@ module.exports = {
         qParams,
       );
     } catch (error) {
-      BaseMySQLProvider.rollbackTransaction(connection);
+      await BaseMySQLProvider.rollbackTransaction(connection);
       throw error;
     } finally {
-      BaseMySQLProvider.commitTransaction(connection);
+      await BaseMySQLProvider.commitTransaction(connection);
     }
   },
 
@@ -53,17 +52,17 @@ module.exports = {
     try {
       connection = await BaseMySQLProvider.getPoolConnectionTransaction();
       let qParams = [params.username];
-      let query = ` SELECT * FROM users WHERE username=? `;
+      let query = ` SELECT * FROM users WHERE username = ? `;
       return await BaseMySQLProvider.executePromisedQueryFilterOkPacket(
         connection,
         query,
         qParams,
       );
     } catch (error) {
-      BaseMySQLProvider.rollbackTransaction(connection);
+      await BaseMySQLProvider.rollbackTransaction(connection);
       throw error;
     } finally {
-      BaseMySQLProvider.commitTransaction(connection);
+      await BaseMySQLProvider.commitTransaction(connection);
     }
   },
 
@@ -79,10 +78,10 @@ module.exports = {
         qParams,
       );
     } catch (error) {
-      BaseMySQLProvider.rollbackTransaction(connection);
+      await BaseMySQLProvider.rollbackTransaction(connection);
       throw error;
     } finally {
-      BaseMySQLProvider.commitTransaction(connection);
+      await BaseMySQLProvider.commitTransaction(connection);
     }
   },
 
@@ -92,27 +91,17 @@ module.exports = {
       connection = await BaseMySQLProvider.getPoolConnectionTransaction();
       const expiryTime = new Date(Date.now() + ms(params.session_time));
       let qParams = [params.username, token, expiryTime, "ACTIVE"];
-      let query = `INSERT INTO user_sessions
-    (
-        username,
-        session_token,
-        expiry_time,
-        status
-    )
-    VALUES
-    (
-        ?, ?, ?, ?
-    ) `;
+      let query = `INSERT INTO user_sessions ( username, session_token, expiry_time, status ) VALUES ( ?, ?, ?, ?) `;
       await BaseMySQLProvider.executePromisedQueryFilterOkPacket(
         connection,
         query,
         qParams,
       );
     } catch (error) {
-      BaseMySQLProvider.rollbackTransaction(connection);
+      await BaseMySQLProvider.rollbackTransaction(connection);
       throw error;
     } finally {
-      BaseMySQLProvider.commitTransaction(connection);
+      await BaseMySQLProvider.commitTransaction(connection);
     }
   },
 };

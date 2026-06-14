@@ -61,7 +61,6 @@ module.exports = {
         username: req.body.username,
         password: req.body.password,
         email: req.body.email,
-        currency_code: req.body.currencyCode,
         mobile: req.body.mobile,
         identityNumber: req.body.identityNumber,
         fullname: req.body.fullname,

@@ -91,6 +91,7 @@ after opening the code , run the following in any terminal like command prompt o
 ## Database Setup
 
 Schema.sql is present for schemas 
+NOTE : compulsory insert the currency data before taking any acton in portal
 seed-data-script.sql is present for inserting any ready data
 
 NOTE: either schema.sql an be used for creating tables or else when npm start is done automatically all the necessary tables will be added in db with empty data .
@@ -263,13 +264,17 @@ This guarantees:
 
 ## Multi-Currency Design
 
-Each account stores its own currency.
+Each account stores its own currency. 
 
-Transfers between accounts with different currencies automatically invoke currency conversion.
+(NOTE :- some days before which i submitted in that currency was implemented in user level which is wrong so that is corrected now. )
+
+Transfers between accounts with different currencies automatically invoke currency conversion. (This was the part of previous implementation)
+
+Transfers between accounts with different currencies is restricted now as per the requirement in assignment .
 
 Benefits:
 
-* Supports international wallets
+* Supports international wallets, user can have multicurrency accounts.
 * Simplifies balance management
 * Improves extensibility
 
@@ -283,7 +288,6 @@ The project uses:
 * Supertest
 
 for automated API testing.
-
 ---
 
 ## Install Test Dependencies
@@ -310,8 +314,22 @@ json
 
 Execute all tests:
 
-npm test
+npm test  (It is not needed now as it will run all tests parallel , which will cause issue because of tokens and account/user creation). 
 
+Execute particular file but in the following order :-  
+
+npx jest test/auth/signup.test.js 
+npx jest test/auth/login.test.js 
+npx jest test/auth/logout.test.js 
+npx jest test/auth/session.test.js 
+npx jest test/accounts/account.test.js 
+npx jest test/dashboard/dashboard.test.js 
+npx jest test/deposit/deposit.test.js 
+npx jest test/exchange/exchange.test.js 
+npx jest test/profile/profile.test.js 
+npx jest test/transfer/transfer.test.js 
+npx jest test/transactions/reverse.test.js 
+npx jest test/transactions/transactions.test.js
 
 ---
 
@@ -333,6 +351,7 @@ npm test
 
 * Dashboard Summary
 * Account Visibility
+* Live Rates w.r.t USD
 
 ### Profile
 
@@ -353,7 +372,7 @@ npm test
 ### Transfer
 
 * Same Currency Transfer
-* Cross Currency Transfer
+* Cross Currency Transfer Error
 * Insufficient Balance
 * Invalid Accounts
 
@@ -390,11 +409,16 @@ Approx 110+ Test Cases
 
 The following assumptions were made during development:
 
-1. Users can own multiple accounts.
+1. Users can own multiple accounts with different currencies.
 2. Each account belongs to exactly one user.
 3. Each account maintains a single currency.
-4. Transfers may occur between different currencies.
+4. Transfers may not occur between different currencies should happen only in same currency.
 5. Session expiration is configurable using environment variables.
 6. Only authenticated users can access dashboard APIs.
 7. Financial transactions must be atomic.
 8. Reverse operations are fully auditable.
+9. Actual Deposit can happen through bank only so assuming here source is confirmed so directly depositing in particular account with different currencies.
+10. Self Transfers cannot be done.
+11. Cors is public as of now because code is not deployed in any server as of now.
+12. Basic UI has been used as discussed so no SPA framework.
+13. Please change the testing values accordingly and test , at present what are there those are tested with empty db so now if tested with same data then may show different result.

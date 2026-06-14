@@ -93,7 +93,7 @@ module.exports = {
   MISSING_TOKEN: {
     code: "1014",
     message: "Invalid request, Missing Token ",
-    status: HTTP_CODES.BAD_REQUEST,
+    status: HTTP_CODES.UNAUTHORISED,
   },
 
   INVALID_AMOUNT_EXCHANGE: {
@@ -173,5 +173,72 @@ module.exports = {
     code: "1027",
     message: "Invalid Request, Invalid transaction id",
     status: HTTP_CODES.BAD_REQUEST,
+  },
+
+  INVALID_ACCOUNT_FORMAT: {
+    code: "1028",
+    message: "Invalid Request, Invalid account format only letters , number or both allowed",
+    status: HTTP_CODES.BAD_REQUEST
+  },
+
+  DUPLICATE_ACCOUNT: {
+    code: "1029",
+    message: "Invalid Request, Duplicate Account",
+    status: HTTP_CODES.BAD_REQUEST
+  },
+
+  ACCOUNT_NOT_EXIST: {
+    code: "1030",
+    message: "Invalid Request, Account Not Exist or Not Belongs to you",
+    status: HTTP_CODES.BAD_REQUEST
+  },
+
+  INVALID_EXCHANGE_CURRENCY: {
+    code: "1031",
+    message: "Invalid Request, Invalid Exchange Currency",
+    status: HTTP_CODES.BAD_REQUEST
+  },
+
+  INVALID_TRANSFER_TRANSACTION: {
+    code: "1032",
+    message: "Invalid Request, Transfer allowed only between accounts with same currency",
+    status: HTTP_CODES.BAD_REQUEST
+  },
+
+  INVALID_REVERSAL: {
+    code: "1033",
+    message: "Invalid Request, Transaction already reversed",
+    status: HTTP_CODES.BAD_REQUEST
+  },
+
+  MISSING_CURRENCY: {
+    code: "1034",
+    message: "Invalid Request, Missing Currency Value",
+    status: HTTP_CODES.BAD_REQUEST
+  },
+
+  INVALID_CURRENCY: {
+    code: "1035",
+    message: "Invalid Request, Invalid Currency",
+    status: HTTP_CODES.BAD_REQUEST
+  },
+
+  MISSING_PROFILE_DETAILS:{
+    code: "1036",
+    message: "Invalid Request, Missing Profile Details of Given Username",
+    status: HTTP_CODES.BAD_REQUEST
+  },
+
+  DUPLICATE_PROFILE_DETAILS:{
+    code: "1037",
+    message: "Invalid Request, Duplicate profile details either of the entered values is already there with user.",
+    status: HTTP_CODES.BAD_REQUEST
+  },
+
+  SELF_TRANSFER: {
+    code: "1038",
+    message: "Invalid Request, Self Transfer",
+    status: HTTP_CODES.BAD_REQUEST
   }
+
 };
